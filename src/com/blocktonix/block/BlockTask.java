@@ -38,7 +38,7 @@ public class BlockTask implements Callable<String>
     // String latestBlockNumberInDb = blockDbOperations.getBlocksInDb();
     String output = null;
     // if (!String.valueOf(block.getNumber()).equalsIgnoreCase(latestBlockNumberInDb))
-    if (blockDbOperations.getBlocksInDb().contains(blockNumber))
+    if (!blockDbOperations.getBlocksInDb().contains(blockNumber))
     {
       // store block and related transactions in block
       Block block = blockOps.getBlock(blockNumber).getBlock();
