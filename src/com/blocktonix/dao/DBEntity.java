@@ -20,19 +20,19 @@ public class DBEntity
 
   public static EntityManager getEntityManager()
   {
-    if (entitymanager == null)
-    {
-      emfactory = Persistence.createEntityManagerFactory("blocktonix-eth-explorer");
-      logger.debug("Creating new DB Entity Manager Factory " + emfactory.getClass().toString());
-      entitymanager = emfactory.createEntityManager();
-    }
-    else
-      logger.debug("Using existing DB Entity Manager Factory " + emfactory.getClass().toString());
-    return entitymanager;
-
+    // if (entitymanager == null)
+    // {
     // emfactory = Persistence.createEntityManagerFactory("blocktonix-eth-explorer");
     // logger.debug("Creating new DB Entity Manager Factory " + emfactory.getClass().toString());
     // entitymanager = emfactory.createEntityManager();
+    // }
+    // else
+    // logger.debug("Using existing DB Entity Manager Factory " + emfactory.getClass().toString());
     // return entitymanager;
+
+    emfactory = Persistence.createEntityManagerFactory("blocktonix-eth-explorer");
+    logger.debug("Creating new DB Entity Manager Factory " + emfactory.getClass().toString());
+    entitymanager = emfactory.createEntityManager();
+    return entitymanager;
   }
 }

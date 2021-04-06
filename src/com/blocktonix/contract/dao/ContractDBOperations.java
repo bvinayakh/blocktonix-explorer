@@ -53,8 +53,8 @@ public class ContractDBOperations
     entitymanager.getTransaction().begin();
     entitymanager.persist(dao);
     entitymanager.getTransaction().commit();
-    System.out.println("stored contract " + contractNode.get("Symbol").asText() + " with transaction hash " + contractNode.get("TransactionHash").asText()
-        + " in block " + contractNode.get("Block").asText());
+    System.out.println("stored contract " + contractNode.get("Symbol").asText() + " with amount " + dao.amount + " with transaction hash "
+        + contractNode.get("TransactionHash").asText() + " in block " + contractNode.get("Block").asText());
   }
 
   public void storeContractAbi(String contractAddress, String contractSymbol, String contractAbi)
@@ -63,7 +63,7 @@ public class ContractDBOperations
     dao.contractAbi = contractAbi;
     dao.contractAddress = contractAddress;
     dao.contractSymbol = contractSymbol;
-    //testing
+    // testing
     entitymanager.clear();
     entitymanager.getTransaction().begin();
     entitymanager.persist(dao);

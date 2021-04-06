@@ -100,7 +100,7 @@ public class TransactionDBOperations
       String xferAmountString = String.valueOf(Numeric.toBigInt(transferAmount));
       Integer decimalsInt = Integer.valueOf(contractInfoNode.get("Decimals").asText());
       String preRoundedAmount = calculateDecimalPlaces(transaction.getHash(), contractAddress, xferAmountString, '.', decimalsInt);
-      String amountRounded = String.valueOf(roundAvoid(Double.valueOf(preRoundedAmount), 3));
+      String amountRounded = preRoundedAmount.substring(0, preRoundedAmount.indexOf('.') + 3);
       // contractNode.putPOJO("Amount", calculateDecimalPlaces(transaction.getHash(), contractAddress,
       // xferAmountString, '.', decimalsInt));
       contractNode.putPOJO("Amount", amountRounded);
@@ -130,12 +130,6 @@ public class TransactionDBOperations
     entitymanager.getTransaction().commit();
     System.out.println("stored transaction " + transaction.getHash() + " from block " + transaction.getBlockNumber());
     return transaction.getHash();
-  }
-
-  public double roundAvoid(double value, int places)
-  {
-    double scale = Math.pow(10, places);
-    return Math.round(value * scale) / scale;
   }
 
   public String calculateDecimalPlaces(String transferHash, String contractAddress, String str, char ch, int position)
