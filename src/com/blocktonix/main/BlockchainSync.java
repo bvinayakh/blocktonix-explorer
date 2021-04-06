@@ -28,7 +28,8 @@ public class BlockchainSync
   public void sync()
   {
     responsesList = new ArrayList<String>();
-    String infuraEndpoint = "https://mainnet.infura.io/v3/3deb0847ce9942568005689574ba69db";
+    // String infuraEndpoint = "https://mainnet.infura.io/v3/3deb0847ce9942568005689574ba69db";
+    String infuraEndpoint = "http://135.181.213.174:8545";
     web3 = Web3j.build(new HttpService(infuraEndpoint));
     BlockOperations blockOps = new BlockOperations(web3);
     try

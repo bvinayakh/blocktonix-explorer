@@ -1,6 +1,7 @@
 package com.blocktonix.transaction.dao;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.List;
@@ -98,7 +99,11 @@ public class TransactionDBOperations
       // convert amount to readable decimal number
       String xferAmountString = String.valueOf(Numeric.toBigInt(transferAmount));
       Integer decimalsInt = Integer.valueOf(contractInfoNode.get("Decimals").asText());
-      contractNode.putPOJO("Amount", calculateDecimalPlaces(transaction.getHash(), contractAddress, xferAmountString, '.', decimalsInt));
+      String preRoundedAmount = calculateDecimalPlaces(transaction.getHash(), contractAddress, xferAmountString, '.', decimalsInt);
+      String amountRounded = String.valueOf(roundAvoid(Double.valueOf(preRoundedAmount), 3));
+      // contractNode.putPOJO("Amount", calculateDecimalPlaces(transaction.getHash(), contractAddress,
+      // xferAmountString, '.', decimalsInt));
+      contractNode.putPOJO("Amount", amountRounded);
       contractNode.putPOJO("TransactionHash", transaction.getHash());
       contractNode.putPOJO("Block", transaction.getBlockNumber());
       // search for contractAbi in database. if not found then get from etherscan
@@ -125,6 +130,12 @@ public class TransactionDBOperations
     entitymanager.getTransaction().commit();
     System.out.println("stored transaction " + transaction.getHash() + " from block " + transaction.getBlockNumber());
     return transaction.getHash();
+  }
+
+  public double roundAvoid(double value, int places)
+  {
+    double scale = Math.pow(10, places);
+    return Math.round(value * scale) / scale;
   }
 
   public String calculateDecimalPlaces(String transferHash, String contractAddress, String str, char ch, int position)
