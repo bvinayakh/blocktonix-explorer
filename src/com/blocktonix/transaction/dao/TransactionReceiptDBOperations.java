@@ -54,6 +54,7 @@ public class TransactionReceiptDBOperations
     {
       TransactionDao resultDao = resultIterator.next();
     }
+    entitymanager.close();
     return parentNode;
   }
 
@@ -86,6 +87,7 @@ public class TransactionReceiptDBOperations
     entitymanager.getTransaction().begin();
     entitymanager.persist(dao);
     entitymanager.getTransaction().commit();
+    entitymanager.close();
     System.out.println("stored transaction receipt " + receipt.getTransactionHash() + " for transaction " + receipt.getTransactionHash() + " from block "
         + receipt.getBlockNumber());
   }

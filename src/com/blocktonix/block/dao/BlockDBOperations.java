@@ -114,6 +114,7 @@ public class BlockDBOperations
     TypedQuery<BlockDao> query = entitymanager.createQuery(criteriaQuery);
     // List<BlockDao> blockList = query.getResultList();
     List<BlockDao> blocksList = query.getResultList();
+    entitymanager.close();
     Iterator<BlockDao> blockIterator = blocksList.iterator();
     while (blockIterator.hasNext())
       blockInDb.add(blockIterator.next().number);
@@ -154,6 +155,7 @@ public class BlockDBOperations
     entitymanager.getTransaction().begin();
     entitymanager.persist(dao);
     entitymanager.getTransaction().commit();
+    entitymanager.close();
     System.out.println("stored block " + block.getNumber());
   }
 }

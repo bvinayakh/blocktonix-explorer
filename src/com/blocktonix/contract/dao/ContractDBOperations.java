@@ -53,6 +53,7 @@ public class ContractDBOperations
     entitymanager.getTransaction().begin();
     entitymanager.persist(dao);
     entitymanager.getTransaction().commit();
+    entitymanager.close();
     System.out.println("stored contract " + contractNode.get("Symbol").asText() + " with amount " + dao.amount + " with transaction hash "
         + contractNode.get("TransactionHash").asText() + " in block " + contractNode.get("Block").asText());
   }
@@ -68,6 +69,7 @@ public class ContractDBOperations
     entitymanager.getTransaction().begin();
     entitymanager.persist(dao);
     entitymanager.getTransaction().commit();
+    entitymanager.close();
   }
 
   public String getContractAbi(String contractAddress) throws Exception
@@ -85,6 +87,7 @@ public class ContractDBOperations
       ContractABIDao dao = contractAbiIterator.next();
       if (dao.contractAddress.equalsIgnoreCase(contractAddress)) contractAbi = dao.contractAbi;
     }
+    entitymanager.close();
     return contractAbi;
   }
 }
