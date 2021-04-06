@@ -66,7 +66,7 @@ public class TransactionDBOperations
     {
       TransactionDao resultDao = resultIterator.next();
     }
-    entitymanager.close();
+    // entitymanager.close();
     return parentNode;
   }
 
@@ -129,7 +129,7 @@ public class TransactionDBOperations
     entitymanager.getTransaction().begin();
     entitymanager.persist(dao);
     entitymanager.getTransaction().commit();
-    entitymanager.close();
+    // entitymanager.close();
     System.out.println("stored transaction " + transaction.getHash() + " from block " + transaction.getBlockNumber());
     return transaction.getHash();
   }
