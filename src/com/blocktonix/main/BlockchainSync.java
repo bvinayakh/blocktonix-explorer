@@ -58,7 +58,8 @@ public class BlockchainSync
 
   private void processBlock(BigInteger blockNumber)
   {
-    ExecutorService executor = Executors.newCachedThreadPool();
+    // ExecutorService executor = Executors.newCachedThreadPool();
+    ExecutorService executor = Executors.newFixedThreadPool(15);
     Collection<Callable<String>> callables = new ArrayList<Callable<String>>();
     callables.add(new BlockTask(web3, blockNumber));
     List<Future<String>> futures;
