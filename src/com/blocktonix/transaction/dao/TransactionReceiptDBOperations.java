@@ -56,11 +56,10 @@ public class TransactionReceiptDBOperations
     {
       TransactionDao resultDao = resultIterator.next();
     }
-    entitymanager.close();
     return parentNode;
   }
 
-  public void storeTransaction(TransactionReceipt receipt)
+  public void storeTransactionReceipt(TransactionReceipt receipt)
   {
     TransactionReceiptDao dao = new TransactionReceiptDao();
     dao.blockHash = receipt.getBlockHash();
@@ -97,7 +96,11 @@ public class TransactionReceiptDBOperations
       et.begin();
       entitymanager.persist(dao);
       et.commit();
-      if (!et.isActive()) entitymanager.close();
+      if (!et.isActive())
+      {
+        entitymanager.clear();
+        entitymanager.close();
+      }
     }
 
     System.out.println("stored transaction receipt " + receipt.getTransactionHash() + " for transaction " + receipt.getTransactionHash() + " from block "

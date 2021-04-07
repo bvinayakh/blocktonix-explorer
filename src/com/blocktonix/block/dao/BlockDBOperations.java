@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.persistence.LockModeType;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -51,8 +52,6 @@ public class BlockDBOperations
     transactionOps = new TransactionOperations(web3);
     transactionDbOps = new TransactionDBOperations(web3);
     transactionReceiptDbOps = new TransactionReceiptDBOperations();
-
-
   }
 
   // public JsonNode getBlock(BigInteger blockNumber) throws JsonProcessingException, IOException
@@ -149,15 +148,27 @@ public class BlockDBOperations
       TransactionObject transaction = (TransactionObject) transactionsIterator.next().get();
       String txhash = transactionDbOps.storeTransaction(transaction);
       TransactionReceipt receipt = web3.ethGetTransactionReceipt(txhash).send().getResult();
-      transactionReceiptDbOps.storeTransaction(receipt);
+      transactionReceiptDbOps.storeTransactionReceipt(receipt);
     }
     dao.transactionsRoot = block.getTransactionsRoot();
     dao.uncles = StringUtils.join(block.getUncles(), ",");
 
-    entitymanager.getTransaction().begin();
-    entitymanager.persist(dao);
-    entitymanager.getTransaction().commit();
-    entitymanager.close();
+    // entitymanager.getTransaction().begin();
+    // entitymanager.persist(dao);
+    // entitymanager.getTransaction().commit();
+
+    EntityTransaction et = entitymanager.getTransaction();
+    if (!et.isActive())
+    {
+      et.begin();
+      entitymanager.persist(dao);
+      et.commit();
+      if (!et.isActive())
+      {
+        entitymanager.clear();
+        entitymanager.close();
+      }
+    }
 
     System.out.println("stored block " + block.getNumber());
   }

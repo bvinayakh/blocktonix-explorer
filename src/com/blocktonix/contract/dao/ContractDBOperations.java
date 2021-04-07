@@ -63,7 +63,11 @@ public class ContractDBOperations
       et.begin();
       entitymanager.persist(dao);
       et.commit();
-      if (!et.isActive()) entitymanager.close();
+      if (!et.isActive())
+      {
+        entitymanager.clear();
+        entitymanager.close();
+      }
     }
 
     System.out.println("stored contract " + contractNode.get("Symbol").asText() + " with amount " + dao.amount + " with transaction hash "
@@ -86,7 +90,11 @@ public class ContractDBOperations
       et.begin();
       entitymanager.persist(dao);
       et.commit();
-      if (!et.isActive()) entitymanager.close();
+      if (!et.isActive())
+      {
+        entitymanager.clear();
+        entitymanager.close();
+      }
     }
   }
 
@@ -105,7 +113,6 @@ public class ContractDBOperations
       ContractABIDao dao = contractAbiIterator.next();
       if (dao.contractAddress.equalsIgnoreCase(contractAddress)) contractAbi = dao.contractAbi;
     }
-    // entitymanager.close();
     return contractAbi;
   }
 }
