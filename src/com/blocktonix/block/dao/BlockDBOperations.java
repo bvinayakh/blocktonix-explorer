@@ -153,11 +153,13 @@ public class BlockDBOperations
     }
     dao.transactionsRoot = block.getTransactionsRoot();
     dao.uncles = StringUtils.join(block.getUncles(), ",");
-    entitymanager.lock(dao, LockModeType.PESSIMISTIC_WRITE);
+
     entitymanager.getTransaction().begin();
+    entitymanager.lock(dao, LockModeType.PESSIMISTIC_WRITE);
     entitymanager.persist(dao);
     entitymanager.getTransaction().commit();
     entitymanager.close();
+
     System.out.println("stored block " + block.getNumber());
   }
 }

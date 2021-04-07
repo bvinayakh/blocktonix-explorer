@@ -51,11 +51,13 @@ public class ContractDBOperations
     dao.transactionHash = contractNode.get("TransactionHash").asText();
     dao.blockNumber = contractNode.get("Block").asText();
     dao.abi = contractNode.get("ABI").asText();
+
     entitymanager.getTransaction().begin();
+    entitymanager.lock(dao, LockModeType.PESSIMISTIC_WRITE);
     entitymanager.persist(dao);
     entitymanager.getTransaction().commit();
     entitymanager.close();
-    entitymanager.lock(dao, LockModeType.PESSIMISTIC_WRITE);
+
     System.out.println("stored contract " + contractNode.get("Symbol").asText() + " with amount " + dao.amount + " with transaction hash "
         + contractNode.get("TransactionHash").asText() + " in block " + contractNode.get("Block").asText());
   }
@@ -67,9 +69,8 @@ public class ContractDBOperations
     dao.contractAddress = contractAddress;
     dao.contractSymbol = contractSymbol;
     // testing
-    entitymanager.clear();
-    entitymanager.lock(dao, LockModeType.PESSIMISTIC_WRITE);
     entitymanager.getTransaction().begin();
+    entitymanager.lock(dao, LockModeType.PESSIMISTIC_WRITE);
     entitymanager.persist(dao);
     entitymanager.getTransaction().commit();
     entitymanager.close();

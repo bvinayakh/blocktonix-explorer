@@ -128,11 +128,13 @@ public class TransactionDBOperations
       dao.transactionIndex = String.valueOf(transaction.getTransactionIndex());
       dao.v = String.valueOf(transaction.getV());
       dao.value = String.valueOf(transaction.getValue());
-      entitymanager.lock(dao, LockModeType.PESSIMISTIC_WRITE);
+
       entitymanager.getTransaction().begin();
+      entitymanager.lock(dao, LockModeType.PESSIMISTIC_WRITE);
       entitymanager.persist(dao);
       entitymanager.getTransaction().commit();
       entitymanager.close();
+
       System.out.println("stored transaction " + transaction.getHash() + " from block " + transaction.getBlockNumber());
     }
     catch (ConstraintViolationException constraintException)

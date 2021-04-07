@@ -85,11 +85,13 @@ public class TransactionReceiptDBOperations
     dao.transactionHash = receipt.getTransactionHash();
     dao.transactionIndex = String.valueOf(receipt.getTransactionIndex());
     dao.transactionStatus = receipt.getStatus();
-    entitymanager.lock(dao, LockModeType.PESSIMISTIC_WRITE);
+
     entitymanager.getTransaction().begin();
+    entitymanager.lock(dao, LockModeType.PESSIMISTIC_WRITE);
     entitymanager.persist(dao);
     entitymanager.getTransaction().commit();
     entitymanager.close();
+
     System.out.println("stored transaction receipt " + receipt.getTransactionHash() + " for transaction " + receipt.getTransactionHash() + " from block "
         + receipt.getBlockNumber());
   }
