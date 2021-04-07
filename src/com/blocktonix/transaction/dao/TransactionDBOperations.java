@@ -6,6 +6,7 @@ import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.persistence.LockModeType;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -129,10 +130,18 @@ public class TransactionDBOperations
       dao.v = String.valueOf(transaction.getV());
       dao.value = String.valueOf(transaction.getValue());
 
-      entitymanager.getTransaction().begin();
-      entitymanager.persist(dao);
-      entitymanager.getTransaction().commit();
-      entitymanager.close();
+      // entitymanager.getTransaction().begin();
+      // entitymanager.persist(dao);
+      // entitymanager.getTransaction().commit();
+
+      EntityTransaction et = entitymanager.getTransaction();
+      if (!et.isActive())
+      {
+        et.begin();
+        entitymanager.persist(dao);
+        et.commit();
+        if (!et.isActive()) entitymanager.close();
+      }
 
       System.out.println("stored transaction " + transaction.getHash() + " from block " + transaction.getBlockNumber());
     }

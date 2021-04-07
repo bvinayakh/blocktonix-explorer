@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.persistence.LockModeType;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -52,11 +53,18 @@ public class ContractDBOperations
     dao.blockNumber = contractNode.get("Block").asText();
     dao.abi = contractNode.get("ABI").asText();
 
-    entitymanager.getTransaction().begin();
-    entitymanager.lock(dao, LockModeType.PESSIMISTIC_WRITE);
-    entitymanager.persist(dao);
-    entitymanager.getTransaction().commit();
-    entitymanager.close();
+    // entitymanager.getTransaction().begin();
+    // entitymanager.persist(dao);
+    // entitymanager.getTransaction().commit();
+
+    EntityTransaction et = entitymanager.getTransaction();
+    if (!et.isActive())
+    {
+      et.begin();
+      entitymanager.persist(dao);
+      et.commit();
+      if (!et.isActive()) entitymanager.close();
+    }
 
     System.out.println("stored contract " + contractNode.get("Symbol").asText() + " with amount " + dao.amount + " with transaction hash "
         + contractNode.get("TransactionHash").asText() + " in block " + contractNode.get("Block").asText());
@@ -69,10 +77,17 @@ public class ContractDBOperations
     dao.contractAddress = contractAddress;
     dao.contractSymbol = contractSymbol;
     // testing
-    entitymanager.getTransaction().begin();
-    entitymanager.persist(dao);
-    entitymanager.getTransaction().commit();
-    entitymanager.close();
+    // entitymanager.getTransaction().begin();
+    // entitymanager.persist(dao);
+    // entitymanager.getTransaction().commit();
+    EntityTransaction et = entitymanager.getTransaction();
+    if (!et.isActive())
+    {
+      et.begin();
+      entitymanager.persist(dao);
+      et.commit();
+      if (!et.isActive()) entitymanager.close();
+    }
   }
 
   public String getContractAbi(String contractAddress) throws Exception

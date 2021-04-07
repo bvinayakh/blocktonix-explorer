@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.persistence.LockModeType;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -86,10 +87,18 @@ public class TransactionReceiptDBOperations
     dao.transactionIndex = String.valueOf(receipt.getTransactionIndex());
     dao.transactionStatus = receipt.getStatus();
 
-    entitymanager.getTransaction().begin();
-    entitymanager.persist(dao);
-    entitymanager.getTransaction().commit();
-    entitymanager.close();
+    // entitymanager.getTransaction().begin();
+    // entitymanager.persist(dao);
+    // entitymanager.getTransaction().commit();
+
+    EntityTransaction et = entitymanager.getTransaction();
+    if (!et.isActive())
+    {
+      et.begin();
+      entitymanager.persist(dao);
+      et.commit();
+      if (!et.isActive()) entitymanager.close();
+    }
 
     System.out.println("stored transaction receipt " + receipt.getTransactionHash() + " for transaction " + receipt.getTransactionHash() + " from block "
         + receipt.getBlockNumber());
