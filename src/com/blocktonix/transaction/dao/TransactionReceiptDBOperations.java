@@ -87,7 +87,6 @@ public class TransactionReceiptDBOperations
     dao.transactionStatus = receipt.getStatus();
 
     entitymanager.getTransaction().begin();
-    entitymanager.lock(dao, LockModeType.PESSIMISTIC_WRITE);
     entitymanager.persist(dao);
     entitymanager.getTransaction().commit();
     entitymanager.close();

@@ -130,7 +130,6 @@ public class TransactionDBOperations
       dao.value = String.valueOf(transaction.getValue());
 
       entitymanager.getTransaction().begin();
-      entitymanager.lock(dao, LockModeType.PESSIMISTIC_WRITE);
       entitymanager.persist(dao);
       entitymanager.getTransaction().commit();
       entitymanager.close();
