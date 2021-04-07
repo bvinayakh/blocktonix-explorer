@@ -6,6 +6,7 @@ import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -118,7 +119,6 @@ public class TransactionDBOperations
           contractDbOps.storeContractAbi(contractAddress, contractInfoNode.get("Symbol").asText(), contractAbi);
         }
         contractNode.putPOJO("ABI", contractAbi);
-        // contractNode.putPOJO("ABI", contractOps.getContractABI(contractAddress));
         contractDbOps.storeContract(contractNode);
       }
       dao.nonce = String.valueOf(transaction.getNonce());
@@ -128,10 +128,11 @@ public class TransactionDBOperations
       dao.transactionIndex = String.valueOf(transaction.getTransactionIndex());
       dao.v = String.valueOf(transaction.getV());
       dao.value = String.valueOf(transaction.getValue());
+      entitymanager.lock(dao, LockModeType.PESSIMISTIC_WRITE);
       entitymanager.getTransaction().begin();
       entitymanager.persist(dao);
       entitymanager.getTransaction().commit();
-      // entitymanager.close();
+      entitymanager.close();
       System.out.println("stored transaction " + transaction.getHash() + " from block " + transaction.getBlockNumber());
     }
     catch (ConstraintViolationException constraintException)

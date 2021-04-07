@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -54,7 +55,7 @@ public class TransactionReceiptDBOperations
     {
       TransactionDao resultDao = resultIterator.next();
     }
-    // entitymanager.close();
+    entitymanager.close();
     return parentNode;
   }
 
@@ -84,10 +85,11 @@ public class TransactionReceiptDBOperations
     dao.transactionHash = receipt.getTransactionHash();
     dao.transactionIndex = String.valueOf(receipt.getTransactionIndex());
     dao.transactionStatus = receipt.getStatus();
+    entitymanager.lock(dao, LockModeType.PESSIMISTIC_WRITE);
     entitymanager.getTransaction().begin();
     entitymanager.persist(dao);
     entitymanager.getTransaction().commit();
-    // entitymanager.close();
+    entitymanager.close();
     System.out.println("stored transaction receipt " + receipt.getTransactionHash() + " for transaction " + receipt.getTransactionHash() + " from block "
         + receipt.getBlockNumber());
   }

@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -53,7 +54,8 @@ public class ContractDBOperations
     entitymanager.getTransaction().begin();
     entitymanager.persist(dao);
     entitymanager.getTransaction().commit();
-    // entitymanager.close();
+    entitymanager.close();
+    entitymanager.lock(dao, LockModeType.PESSIMISTIC_WRITE);
     System.out.println("stored contract " + contractNode.get("Symbol").asText() + " with amount " + dao.amount + " with transaction hash "
         + contractNode.get("TransactionHash").asText() + " in block " + contractNode.get("Block").asText());
   }
@@ -66,10 +68,11 @@ public class ContractDBOperations
     dao.contractSymbol = contractSymbol;
     // testing
     entitymanager.clear();
+    entitymanager.lock(dao, LockModeType.PESSIMISTIC_WRITE);
     entitymanager.getTransaction().begin();
     entitymanager.persist(dao);
     entitymanager.getTransaction().commit();
-    // entitymanager.close();
+    entitymanager.close();
   }
 
   public String getContractAbi(String contractAddress) throws Exception
