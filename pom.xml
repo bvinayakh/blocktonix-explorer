@@ -43,22 +43,16 @@
 			<version>5.0.0</version>
 		</dependency>
 
-
 		<!-- Begin Hibernate -->
 		<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
+		<!-- <dependency> <groupId>org.hibernate</groupId> <artifactId>hibernate-core</artifactId> 
+			<version>5.4.28.Final</version> </dependency> -->
+		<!-- https://mvnrepository.com/artifact/org.hibernate.orm/hibernate-core -->
 		<dependency>
-			<groupId>org.hibernate</groupId>
+			<groupId>org.hibernate.orm</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>5.4.28.Final</version>
+			<version>6.0.0.Alpha7</version>
 		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-c3p0</artifactId>
-			<version>5.4.17.Final</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.mchange/c3p0 -->
-		<!-- <dependency> <groupId>com.mchange</groupId> <artifactId>c3p0</artifactId> 
-			<version>0.9.5.5</version> </dependency> -->
 		<!-- End Hibernate -->
 		<!-- https://mvnrepository.com/artifact/org.lucee/postgresql -->
 		<dependency>
@@ -66,8 +60,7 @@
 			<artifactId>postgresql</artifactId>
 			<version>8.3-606.jdbc4</version>
 		</dependency>
-		<!-- <dependency> <groupId>org.postgresql</groupId> <artifactId>postgresql</artifactId> 
-			<version>9.4-1200-jdbc41</version> </dependency> -->
+		<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
 		<!-- End Postgres Dependencies -->
 		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
 		<dependency>
