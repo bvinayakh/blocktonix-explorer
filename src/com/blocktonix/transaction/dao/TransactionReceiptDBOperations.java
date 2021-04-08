@@ -13,6 +13,8 @@ import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Root;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.web3j.protocol.core.methods.response.EthBlock.Block;
 import org.web3j.protocol.core.methods.response.EthBlock.TransactionObject;
 import org.web3j.protocol.core.methods.response.EthBlock.TransactionResult;
@@ -26,6 +28,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class TransactionReceiptDBOperations
 {
+  public static final Logger logger = LoggerFactory.getLogger(TransactionReceiptDBOperations.class);
+
   private ObjectMapper mapper = null;
   private ObjectNode parentNode = null;
 
@@ -97,9 +101,12 @@ public class TransactionReceiptDBOperations
     session.beginTransaction();
     session.save(dao);
     session.getTransaction().commit();
-//    session.close();
+    // session.close();
 
-    System.out.println("stored transaction receipt " + receipt.getTransactionHash() + " for transaction " + receipt.getTransactionHash() + " from block "
+    // System.out.println("stored transaction receipt " + receipt.getTransactionHash() + " for
+    // transaction " + receipt.getTransactionHash() + " from block "
+    // + receipt.getBlockNumber());
+    logger.info("stored transaction receipt " + receipt.getTransactionHash() + " for transaction " + receipt.getTransactionHash() + " from block "
         + receipt.getBlockNumber());
   }
 

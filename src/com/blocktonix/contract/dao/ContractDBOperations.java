@@ -62,7 +62,11 @@ public class ContractDBOperations
     session.getTransaction().commit();
     // session.close();
 
-    System.out.println("stored contract " + contractNode.get("Symbol").asText() + " with amount " + dao.amount + " with transaction hash "
+    // System.out.println("stored contract " + contractNode.get("Symbol").asText() + " with amount " +
+    // dao.amount + " with transaction hash "
+    // + contractNode.get("TransactionHash").asText() + " in block " +
+    // contractNode.get("Block").asText());
+    logger.info("stored contract " + contractNode.get("Symbol").asText() + " with amount " + dao.amount + " with transaction hash "
         + contractNode.get("TransactionHash").asText() + " in block " + contractNode.get("Block").asText());
   }
 
@@ -79,6 +83,7 @@ public class ContractDBOperations
     session.beginTransaction();
     session.save(dao);
     session.getTransaction().commit();
+    logger.info("stored contract ABI for " + contractSymbol);
     // session.close();
   }
 

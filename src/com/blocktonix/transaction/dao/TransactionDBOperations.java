@@ -16,6 +16,8 @@ import javax.persistence.criteria.Root;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.exception.ConstraintViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.EthBlock.TransactionObject;
 import org.web3j.protocol.core.methods.response.Transaction;
@@ -24,6 +26,7 @@ import org.web3j.utils.Numeric;
 import com.blocktonix.contract.ContractOperations;
 import com.blocktonix.contract.dao.ContractDBOperations;
 import com.blocktonix.dao.DBEntity;
+import com.blocktonix.main.BlockchainSync;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,6 +34,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class TransactionDBOperations
 {
+  public static final Logger logger = LoggerFactory.getLogger(TransactionDBOperations.class);
+
   private ObjectMapper mapper = null;
   private ObjectNode parentNode = null;
 
@@ -142,17 +147,22 @@ public class TransactionDBOperations
       session.beginTransaction();
       session.save(dao);
       session.getTransaction().commit();
-//      session.close();
-
-      System.out.println("stored transaction " + transaction.getHash() + " from block " + transaction.getBlockNumber());
+      // session.close();
+      //
+      // System.out.println("stored transaction " + transaction.getHash() + " from block " +
+      // transaction.getBlockNumber());
+      logger.info("stored transaction " + transaction.getHash() + " from block " + transaction.getBlockNumber());
     }
     catch (ConstraintViolationException constraintException)
     {
-      System.err.println("Entry exists for Contract " + transaction.getTo() + " in transaction " + transaction.getHash());
+      // System.err.println("Entry exists for Contract " + transaction.getTo() + " in transaction " +
+      // transaction.getHash());
+      logger.error("Entry exists for Contract " + transaction.getTo() + " in transaction " + transaction.getHash());
     }
     catch (Exception e)
     {
-      System.err.println("Error in Contract ABI" + e.getMessage());
+      // System.err.println("Error in Contract ABI" + e.getMessage());
+      logger.error("Error in Contract ABI" + e.getMessage());
     }
     return transaction.getHash();
   }
@@ -172,11 +182,15 @@ public class TransactionDBOperations
     }
     catch (ArrayIndexOutOfBoundsException e)
     {
-      System.err.println("Error decoding the transfer amount for contract " + contractAddress + " in transaction " + transferHash);
+      // System.err.println("Error decoding the transfer amount for contract " + contractAddress + " in
+      // transaction " + transferHash);
+      logger.error("Error decoding the transfer amount for contract " + contractAddress + " in transaction " + transferHash);
     }
     catch (StringIndexOutOfBoundsException e)
     {
-      System.err.println("Error decoding the transfer amount for contract " + contractAddress + " in transaction " + transferHash);
+      // System.err.println("Error decoding the transfer amount for contract " + contractAddress + " in
+      // transaction " + transferHash);
+      logger.error("Error decoding the transfer amount for contract " + contractAddress + " in transaction " + transferHash);
     }
     return output;
   }

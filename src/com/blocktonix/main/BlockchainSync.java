@@ -45,7 +45,6 @@ public class BlockchainSync
     {
       e.printStackTrace();
     }
-    System.out.println(responsesList);
   }
 
 
@@ -75,7 +74,8 @@ public class BlockchainSync
     }
     catch (InterruptedException | ExecutionException e)
     {
-      e.printStackTrace();
+      // e.printStackTrace();
+      logger.error("Execution Error while processing block " + e.getMessage());
     }
     executor.shutdown();
   }

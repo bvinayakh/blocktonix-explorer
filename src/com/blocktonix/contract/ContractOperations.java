@@ -37,7 +37,8 @@ public class ContractOperations
     OkHttpClient client = new OkHttpClient();
     Request request = new Request.Builder().url(etherscanAPI).build();
     Response response = client.newCall(request).execute();
-    System.out.println("contract ABI found for " + contractAddress);
+    logger.info("contract ABI found for " + contractAddress);
+    // System.out.println("contract ABI found for " + contractAddress);
     return response.body().string();
   }
 
@@ -55,7 +56,9 @@ public class ContractOperations
     }
     catch (Exception e)
     {
-      System.err.println("Error fetching contract information for " + contractAddress + " error: " + e.getMessage());
+      // System.err.println("Error fetching contract information for " + contractAddress + " error: " +
+      // e.getMessage());
+      logger.error("Error fetching contract information for " + contractAddress + " error: " + e.getMessage());
     }
     return node;
   }

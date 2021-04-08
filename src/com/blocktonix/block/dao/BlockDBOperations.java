@@ -152,7 +152,8 @@ public class BlockDBOperations
     session.save(dao);
     session.getTransaction().commit();
     // session.close();
-    System.out.println("stored block " + block.getNumber());
+    logger.info("stored block " + block.getNumber());
+    // System.out.println("stored block " + block.getNumber());
     // block persisted
 
     // iterate txn and txn receipt
