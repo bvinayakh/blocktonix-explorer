@@ -1,0 +1,34 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="Block" table="block_information">
+        <meta attribute="class-description">
+            Block Details
+        </meta>
+        <id name="id" type="string" column="number">
+            <generator class="native" />
+        </id>
+        <property name="difficulty" column="difficulty" type="string" />
+        <property name="extra_data" column="extra_data" type="string" />
+        <property name="gas_limit" column="gas_limit" type="string" />
+        <property name="gas_used" column="gas_used" type="string" />
+        <property name="hash" column="hash" type="string" />
+        <property name="logs_bloom" column="logs_bloom" type="string" />
+        <property name="miner" column="miner" type="string" />
+        <property name="mix_hash" column="mix_hash" type="string" />
+        <property name="nonce" column="nonce" type="string" />
+        <property name="number" column="number" type="string" />
+        <property name="parent_hash" column="parent_hash" type="string" />
+        <property name="receipts_root" column="receipts_root" type="string" />
+        <property name="sha3_uncles" column="sha3_uncles" type="string" />
+        <property name="size" column="size" type="string" />
+        <property name="state_root" column="state_root" type="string" />
+        <property name="timestamp" column="timestamp" type="string" />
+        <property name="total_difficulty" column="total_difficulty" type="string" />
+        <property name="transactions" column="transactions" type="string" />
+        <property name="transactions_root" column="transactions_root" type="string" />
+        <property name="uncles" column="uncles" type="string" />
+    </class>
+</hibernate-mapping>
+    

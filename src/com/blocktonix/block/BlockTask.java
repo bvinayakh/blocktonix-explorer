@@ -33,8 +33,6 @@ public class BlockTask implements Callable<String>
   @Override
   public String call() throws Exception
   {
-
-
     // String latestBlockNumberInDb = blockDbOperations.getBlocksInDb();
     String output = null;
     // if (!String.valueOf(block.getNumber()).equalsIgnoreCase(latestBlockNumberInDb))

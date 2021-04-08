@@ -12,6 +12,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Root;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Session;
 import org.web3j.protocol.core.methods.response.EthBlock.Block;
 import org.web3j.protocol.core.methods.response.EthBlock.TransactionObject;
 import org.web3j.protocol.core.methods.response.EthBlock.TransactionResult;
@@ -25,21 +26,23 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class TransactionReceiptDBOperations
 {
-  private EntityManager entitymanager = null;
   private ObjectMapper mapper = null;
   private ObjectNode parentNode = null;
 
+  private Session session = null;
+
   public TransactionReceiptDBOperations()
   {
-    entitymanager = DBEntity.getEntityManager();
     mapper = new ObjectMapper();
+    session = DBEntity.getSessionFactory().openSession();
 
   }
 
   public JsonNode getBlock(String reportId) throws JsonProcessingException, IOException
   {
     parentNode = mapper.createObjectNode();
-    CriteriaBuilder criteriaBuilder = entitymanager.getCriteriaBuilder();
+    EntityManager entityManager = session.getEntityManagerFactory().createEntityManager();
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<TransactionDao> criteria = criteriaBuilder.createQuery(TransactionDao.class);
     // select * equivalent
     Root<TransactionDao> selectAll = criteria.from(TransactionDao.class);
@@ -47,7 +50,7 @@ public class TransactionReceiptDBOperations
     ParameterExpression<String> queryParameters = criteriaBuilder.parameter(String.class);
     criteria.select(selectAll).where(criteriaBuilder.equal(selectAll.get("tid"), queryParameters));
 
-    TypedQuery<TransactionDao> query = entitymanager.createQuery(criteria);
+    TypedQuery<TransactionDao> query = entityManager.createQuery(criteria);
     query.setParameter(queryParameters, reportId);
 
     List<TransactionDao> resultList = query.getResultList();
@@ -56,6 +59,7 @@ public class TransactionReceiptDBOperations
     {
       TransactionDao resultDao = resultIterator.next();
     }
+    entityManager.close();
     return parentNode;
   }
 
@@ -90,18 +94,10 @@ public class TransactionReceiptDBOperations
     // entitymanager.persist(dao);
     // entitymanager.getTransaction().commit();
 
-    EntityTransaction et = entitymanager.getTransaction();
-    if (!et.isActive())
-    {
-      et.begin();
-      entitymanager.persist(dao);
-      et.commit();
-      if (!et.isActive())
-      {
-        entitymanager.clear();
-        entitymanager.close();
-      }
-    }
+    session.beginTransaction();
+    session.save(dao);
+    session.getTransaction().commit();
+//    session.close();
 
     System.out.println("stored transaction receipt " + receipt.getTransactionHash() + " for transaction " + receipt.getTransactionHash() + " from block "
         + receipt.getBlockNumber());

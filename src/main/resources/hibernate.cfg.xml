@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+    "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+	<session-factory>
+
+		<!-- SQL Dialect -->
+		<property name="hibernate.dialect">org.hibernate.dialect.PostgreSQL95Dialect</property>
+
+		<property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+		<property name="hibernate.connection.password">password123</property>
+		<property name="hibernate.connection.url">jdbc:postgresql://172.20.1.200/blocktonix-eth-explorer</property>
+		<property name="hibernate.connection.username">postgres</property>
+		<property name="hibernate.default_schema">blocktonix-eth-explorer</property>
+		<!-- <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property> -->
+
+		<!-- <property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property> --> <!-- DB Dialect -->
+		<property name="hbm2ddl.auto">update</property> <!-- create / create-drop / update -->
+
+		<property name="show_sql">false</property> <!-- Show SQL in console -->
+		<property name="format_sql">false</property> <!-- Show SQL formatted -->
+
+		<!-- Specifying Session Context -->
+		<property name="hibernate.current_session_context_class">org.hibernate.context.internal.ThreadLocalSessionContext</property>
+
+		<!-- Mapping With Model Class Containing Annotations -->
+		<mapping class="com.blocktonix.block.dao.BlockDao" />
+		<mapping class="com.blocktonix.contract.dao.ContractDao" />
+		<mapping class="com.blocktonix.contract.dao.ContractABIDao" />
+		<mapping class="com.blocktonix.transaction.dao.TransactionDao" />
+		<mapping class="com.blocktonix.transaction.dao.TransactionReceiptDao" />
+		<!-- <mapping class="com.cez.dao.KubeConfigDAO" /> -->
+
+
+	</session-factory>
+</hibernate-configuration>

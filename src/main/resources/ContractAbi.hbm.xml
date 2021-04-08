@@ -1,0 +1,17 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="ContractABI" table="contract_abi">
+        <meta attribute="class-description">
+            Contract Application Binary Interface (ABI) Details
+        </meta>
+        <id name="id" type="string" column="contract_symbol">
+            <generator class="native" />
+        </id>
+        <property name="contract_address" column="contract_address" type="string" />
+        <property name="contract_symbol" column="contract_symbol" type="string" />
+        <property name="contract_abi" column="contract_abi" type="string" />
+    </class>
+</hibernate-mapping>
+    

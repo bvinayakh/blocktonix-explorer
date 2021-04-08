@@ -14,6 +14,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Root;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Session;
 import org.hibernate.exception.ConstraintViolationException;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.EthBlock.TransactionObject;
@@ -30,7 +31,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class TransactionDBOperations
 {
-  private EntityManager entitymanager = null;
   private ObjectMapper mapper = null;
   private ObjectNode parentNode = null;
 
@@ -39,20 +39,24 @@ public class TransactionDBOperations
 
   private Web3j web3 = null;
 
+  private Session session = null;
+
   public TransactionDBOperations(Web3j web3j)
   {
-    entitymanager = DBEntity.getEntityManager();
     mapper = new ObjectMapper();
 
     this.web3 = web3j;
     contractOps = new ContractOperations(web3j);
     contractDbOps = new ContractDBOperations(web3j);
+
+    session = DBEntity.getSessionFactory().openSession();
   }
 
   public JsonNode getBlock(String reportId) throws JsonProcessingException, IOException
   {
     parentNode = mapper.createObjectNode();
-    CriteriaBuilder criteriaBuilder = entitymanager.getCriteriaBuilder();
+    EntityManager entityManager = session.getEntityManagerFactory().createEntityManager();
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<TransactionDao> criteria = criteriaBuilder.createQuery(TransactionDao.class);
     // select * equivalent
     Root<TransactionDao> selectAll = criteria.from(TransactionDao.class);
@@ -60,7 +64,7 @@ public class TransactionDBOperations
     ParameterExpression<String> queryParameters = criteriaBuilder.parameter(String.class);
     criteria.select(selectAll).where(criteriaBuilder.equal(selectAll.get("tid"), queryParameters));
 
-    TypedQuery<TransactionDao> query = entitymanager.createQuery(criteria);
+    TypedQuery<TransactionDao> query = entityManager.createQuery(criteria);
     query.setParameter(queryParameters, reportId);
 
     List<TransactionDao> resultList = query.getResultList();
@@ -69,7 +73,7 @@ public class TransactionDBOperations
     {
       TransactionDao resultDao = resultIterator.next();
     }
-    // entitymanager.close();
+    entityManager.close();
     return parentNode;
   }
 
@@ -130,18 +134,15 @@ public class TransactionDBOperations
       dao.v = String.valueOf(transaction.getV());
       dao.value = String.valueOf(transaction.getValue());
 
-      // entitymanager.getTransaction().begin();
+      // EntityTransaction dbTx = entitymanager.getTransaction();
+      // System.out.println("Using dbtxn: " + dbTx.hashCode());
+      // dbTx.begin();
       // entitymanager.persist(dao);
-      // entitymanager.getTransaction().commit();
-
-      EntityTransaction et = entitymanager.getTransaction();
-      if (!et.isActive())
-      {
-        et.begin();
-        entitymanager.persist(dao);
-        et.commit();
-        if (!et.isActive()) entitymanager.close();
-      }
+      // dbTx.commit();
+      session.beginTransaction();
+      session.save(dao);
+      session.getTransaction().commit();
+//      session.close();
 
       System.out.println("stored transaction " + transaction.getHash() + " from block " + transaction.getBlockNumber());
     }

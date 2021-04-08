@@ -1,0 +1,28 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="Transaction" table="transaction_information">
+        <meta attribute="class-description">
+            Block Details
+        </meta>
+        <id name="id" type="string" column="hash">
+            <generator class="native" />
+        </id>
+        <property name="block_hash" column="block_hash" type="string" />
+        <property name="block_number" column="block_number" type="string" />
+        <property name="from" column="from" type="string" />
+        <property name="gas" column="gas" type="string" />
+        <property name="gas_price" column="gas_price" type="string" />
+        <property name="hash" column="hash" type="string" />
+        <property name="input" column="input" type="string" />
+        <property name="nonce" column="nonce" type="string" />
+        <property name="r" column="r" type="string" />
+        <property name="s" column="s" type="string" />
+        <property name="transaction_index" column="transaction_index" type="string" />
+        <property name="to" column="to" type="string" />
+        <property name="v" column="v" type="string" />
+        <property name="value" column="value" type="string" />
+    </class>
+</hibernate-mapping>
+    

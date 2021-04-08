@@ -10,6 +10,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.protocol.Web3j;
@@ -22,17 +23,17 @@ public class ContractDBOperations
 {
   public static final Logger logger = LoggerFactory.getLogger(ContractDBOperations.class);
 
-  private EntityManager entitymanager = null;
   private ObjectMapper mapper = null;
   private ObjectNode parentNode = null;
 
   private Web3j web3 = null;
 
+  private Session session = null;
+
 
   public ContractDBOperations(Web3j web3)
   {
-    entitymanager = DBEntity.getEntityManager();
-
+    session = DBEntity.getSessionFactory().openSession();
     mapper = new ObjectMapper();
 
     this.web3 = web3;
@@ -56,19 +57,10 @@ public class ContractDBOperations
     // entitymanager.getTransaction().begin();
     // entitymanager.persist(dao);
     // entitymanager.getTransaction().commit();
-
-    EntityTransaction et = entitymanager.getTransaction();
-    if (!et.isActive())
-    {
-      et.begin();
-      entitymanager.persist(dao);
-      et.commit();
-      if (!et.isActive())
-      {
-        entitymanager.clear();
-        entitymanager.close();
-      }
-    }
+    session.beginTransaction();
+    session.save(dao);
+    session.getTransaction().commit();
+    // session.close();
 
     System.out.println("stored contract " + contractNode.get("Symbol").asText() + " with amount " + dao.amount + " with transaction hash "
         + contractNode.get("TransactionHash").asText() + " in block " + contractNode.get("Block").asText());
@@ -80,32 +72,25 @@ public class ContractDBOperations
     dao.contractAbi = contractAbi;
     dao.contractAddress = contractAddress;
     dao.contractSymbol = contractSymbol;
-    // testing
+
     // entitymanager.getTransaction().begin();
     // entitymanager.persist(dao);
     // entitymanager.getTransaction().commit();
-    EntityTransaction et = entitymanager.getTransaction();
-    if (!et.isActive())
-    {
-      et.begin();
-      entitymanager.persist(dao);
-      et.commit();
-      if (!et.isActive())
-      {
-        entitymanager.clear();
-        entitymanager.close();
-      }
-    }
+    session.beginTransaction();
+    session.save(dao);
+    session.getTransaction().commit();
+    // session.close();
   }
 
   public String getContractAbi(String contractAddress) throws Exception
   {
     String contractAbi = null;
-    CriteriaBuilder cb = entitymanager.getCriteriaBuilder();
+    EntityManager entityManager = session.getEntityManagerFactory().createEntityManager();
+    CriteriaBuilder cb = entityManager.getCriteriaBuilder();
     CriteriaQuery<ContractABIDao> q = cb.createQuery(ContractABIDao.class);
     // select * equivalent
     Root<ContractABIDao> c = q.from(ContractABIDao.class);
-    TypedQuery<ContractABIDao> query = entitymanager.createQuery(q);
+    TypedQuery<ContractABIDao> query = entityManager.createQuery(q);
     List<ContractABIDao> resultList = query.getResultList();
     Iterator<ContractABIDao> contractAbiIterator = resultList.iterator();
     while (contractAbiIterator.hasNext())
@@ -113,6 +98,7 @@ public class ContractDBOperations
       ContractABIDao dao = contractAbiIterator.next();
       if (dao.contractAddress.equalsIgnoreCase(contractAddress)) contractAbi = dao.contractAbi;
     }
+    entityManager.close();
     return contractAbi;
   }
 }

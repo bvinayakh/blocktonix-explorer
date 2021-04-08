@@ -1,17 +1,15 @@
 package com.blocktonix.block.dao;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.persistence.LockModeType;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.protocol.Web3j;
@@ -30,7 +28,6 @@ public class BlockDBOperations
 {
   public static final Logger logger = LoggerFactory.getLogger(BlockDBOperations.class);
 
-  private EntityManager entitymanager = null;
   private ObjectMapper mapper = null;
   private ObjectNode parentNode = null;
 
@@ -40,14 +37,15 @@ public class BlockDBOperations
   private TransactionDBOperations transactionDbOps = null;
   private TransactionReceiptDBOperations transactionReceiptDbOps = null;
 
+  private Session session = null;
 
   public BlockDBOperations(Web3j web3)
   {
-    entitymanager = DBEntity.getEntityManager();
-
     mapper = new ObjectMapper();
 
     this.web3 = web3;
+
+    session = DBEntity.getSessionFactory().openSession();
 
     transactionOps = new TransactionOperations(web3);
     transactionDbOps = new TransactionDBOperations(web3);
@@ -106,15 +104,16 @@ public class BlockDBOperations
     // return blockNumber;
 
     List<String> blockInDb = new ArrayList<>();
-    CriteriaBuilder criteriaBuilder = entitymanager.getCriteriaBuilder();
+    EntityManager entityManager = session.getEntityManagerFactory().createEntityManager();
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<BlockDao> criteriaQuery = criteriaBuilder.createQuery(BlockDao.class);
     Root<BlockDao> from = criteriaQuery.from(BlockDao.class);
     // CriteriaQuery<BlockDao> select = criteriaQuery.select(from);
     criteriaQuery.orderBy(criteriaBuilder.desc(from.get("number")));
-    TypedQuery<BlockDao> query = entitymanager.createQuery(criteriaQuery);
+    TypedQuery<BlockDao> query = entityManager.createQuery(criteriaQuery);
     // List<BlockDao> blockList = query.getResultList();
     List<BlockDao> blocksList = query.getResultList();
-    // entitymanager.close();
+    entityManager.close();
     Iterator<BlockDao> blockIterator = blocksList.iterator();
     while (blockIterator.hasNext())
       blockInDb.add(blockIterator.next().number);
@@ -142,6 +141,21 @@ public class BlockDBOperations
     dao.timestamp = String.valueOf(block.getTimestamp());
     dao.totalDifficulty = String.valueOf(block.getTotalDifficulty());
     List<TransactionResult> transactionsList = block.getTransactions();
+    dao.transactionsRoot = block.getTransactionsRoot();
+    dao.uncles = StringUtils.join(block.getUncles(), ",");
+
+    // persisting block
+    // entitymanager.getTransaction().begin();
+    // entitymanager.persist(dao);
+    // entitymanager.getTransaction().commit();
+    session.beginTransaction();
+    session.save(dao);
+    session.getTransaction().commit();
+    // session.close();
+    System.out.println("stored block " + block.getNumber());
+    // block persisted
+
+    // iterate txn and txn receipt
     Iterator<TransactionResult> transactionsIterator = transactionsList.iterator();
     while (transactionsIterator.hasNext())
     {
@@ -150,26 +164,7 @@ public class BlockDBOperations
       TransactionReceipt receipt = web3.ethGetTransactionReceipt(txhash).send().getResult();
       transactionReceiptDbOps.storeTransactionReceipt(receipt);
     }
-    dao.transactionsRoot = block.getTransactionsRoot();
-    dao.uncles = StringUtils.join(block.getUncles(), ",");
 
-    // entitymanager.getTransaction().begin();
-    // entitymanager.persist(dao);
-    // entitymanager.getTransaction().commit();
 
-    EntityTransaction et = entitymanager.getTransaction();
-    if (!et.isActive())
-    {
-      et.begin();
-      entitymanager.persist(dao);
-      et.commit();
-      if (!et.isActive())
-      {
-        entitymanager.clear();
-        entitymanager.close();
-      }
-    }
-
-    System.out.println("stored block " + block.getNumber());
   }
 }

@@ -1,0 +1,32 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="TransactionReceipt" table="transaction_receipt">
+        <meta attribute="class-description">
+           Transaction Receipt Details
+        </meta>
+        <id name="id" type="string" column="transaction_hash">
+            <generator class="native" />
+        </id>
+        <property name="block_hash" column="block_hash" type="string" />
+        <property name="block_number" column="block_number" type="string" />
+        <property name="contract_address" column="contract_address" type="string" />
+        <property name="cumulative_gas_used" column="cumulative_gas_used" type="string" />
+        <property name="from" column="from" type="string" />
+        <property name="gas_used" column="gas_used" type="string" />
+        <property name="logs" column="logs" type="string" />
+        <property name="logs_bloom" column="logs_bloom" type="string" />
+        <property name="status" column="status" type="string" />
+        <property name="to" column="to" type="string" />
+        <property name="transaction_hash" column="transaction_hash" type="string" />
+        <property name="transaction_index" column="transaction_index" type="string" />
+        <property name="transaction_status" column="transaction_status" type="string" />
+        <property name="logs_address" column="logs_address" type="string" />
+        <property name="logs_data" column="logs_data" type="string" />
+        <property name="logs_log_index" column="logs_log_index" type="string" />
+        <property name="logs_topics" column="logs_topics" type="string" />
+        <property name="logs_type" column="logs_type" type="string" />
+    </class>
+</hibernate-mapping>
+    
