@@ -208,103 +208,61 @@ public class TransactionDBOperations
     // boolean isValidContract = false;
     ObjectNode inputNode = null;
     String method = data.substring(0, 10);
-    try
+    // List<String> methodAction = Utilities.get4ByteAPI(method);
+    // Iterator<String> methodActionsIterator = methodAction.iterator();
+    // while (methodActionsIterator.hasNext())
+    // {
+    // String action = methodActionsIterator.next();
+    // if ((action.toLowerCase().contains("transfer")) || (action.toLowerCase().contains("swap")) ||
+    // (action.toLowerCase().contains("buy")))
+    // isValidContract = true;
+    // }
+    // if (isValidContract)
+    // {
+    LinkedList<String> split64 = Utilities.split64(data.replace(method, ""));
+    switch (method)
     {
-      // List<String> methodAction = Utilities.get4ByteAPI(method);
-      // Iterator<String> methodActionsIterator = methodAction.iterator();
-      // while (methodActionsIterator.hasNext())
-      // {
-      // String action = methodActionsIterator.next();
-      // if ((action.toLowerCase().contains("transfer")) || (action.toLowerCase().contains("swap")) ||
-      // (action.toLowerCase().contains("buy")))
-      // isValidContract = true;
-      // }
-      // if (isValidContract)
-      // {
-      String to = null;
-      String value = null;
-      Method refMethod = null;
-      Address address = null;
-      Uint256 amount;
-      LinkedList<String> split64 = Utilities.split64(data.replace(method, ""));
-      switch (method)
-      {
-        // valid
-        case "0xa9059cbb":
-          logger.info("processing transaction method 0xa9059cbb");
-          inputNode = mapper.createObjectNode();
-          inputNode.putPOJO("Method", method);
-          data = data.replace(method, "");
-          to = data.substring(0, 64);
-          data = data.replace(to, "");
-          value = data.substring(0, 64);
-          refMethod = TypeDecoder.class.getDeclaredMethod("decode", String.class, int.class, Class.class);
-          refMethod.setAccessible(true);
-          address = (Address) refMethod.invoke(null, to, 0, Address.class);
-          inputNode.putPOJO("Address", address.toString());
-          amount = (Uint256) refMethod.invoke(null, value, 0, Uint256.class);
-          inputNode.putPOJO("Amount", amount.getValue());
-          break;
-        // swap eth for tokens
-        case "0x7ff36ab5":
-          logger.info("Method swapExactETHForTokens(uint256,address[],address,uint256)");
-          // System.out.println(split64);
-          // if (split64.size() == 7)
-          // {
-          // to = split64.get(2);
-          // value = split64.get(0);
-          // refMethod = TypeDecoder.class.getDeclaredMethod("decode", String.class, int.class, Class.class);
-          // refMethod.setAccessible(true);
-          // address = (Address) refMethod.invoke(null, to, 0, Address.class);
-          // inputNode.putPOJO("Address", address.toString());
-          // amount = (Uint256) refMethod.invoke(null, value, 0, Uint256.class);
-          // inputNode.putPOJO("Amount", amount.getValue());
-          // }
-          break;
-        case "0xfb3bdb41":
-          logger.info("Method swapETHForExactTokens(uint256,address[],address,uint256)");
-          break;
-        case "0x18cbafe5":
-          logger.info("Method swapExactTokensForETH(uint256,uint256,address[],address,uint256)");
-          break;
-        case "0x38ed1739":
-          logger.info("Method swapExactTokensForTokens(uint256,uint256,address[],address,uint256)");
-          System.out.println(split64);
-          break;
-        // sell to uniswap
-        case "0xd9627aa4":
-          break;
-        case "0x683fa88d":
-          logger.info("Method transferFrom(address,address,uint256)");
-          break;
-        case "0x791ac947":
-          break;
-        case "0xa694fc3a":
-          break;
-        default:
-          logger.info("transaction not a contract sell or swap");
-          logger.info(data);
-          break;
-        // }
-      }
-    }
-    catch (NoSuchMethodException e)
-    {
-      System.err.println("Error decoding method from transaction input " + e.getLocalizedMessage());
-    }
-    catch (IllegalAccessException e)
-    {
-      System.err.println("Error decoding transaction send to address " + e.getLocalizedMessage());
-    }
-    catch (InvocationTargetException e)
-    {
-      System.err.println("Error decoding transaction send to address " + e.getLocalizedMessage());
-    }
-    catch (NullPointerException e)
-    {
-      System.err.println("Null value detected " + e.getLocalizedMessage());
-    }
+      // valid
+      case "0xa9059cbb":
+        logger.info("processing transaction method 0xa9059cbb");
+        inputNode = mapper.createObjectNode();
+        inputNode.putPOJO("Method", method);
+        data = StringUtils.replace(data, "0xa9059cbb", "");
+        String transferedToAddress = "0x" + StringUtils.substring(data, 24, 64);
+        String transferAmount = StringUtils.substring(data, 64, 128);
+        inputNode.putPOJO("Address", transferedToAddress);
+        inputNode.putPOJO("Amount", transferAmount);
 
+        break;
+      // swap eth for tokens
+      case "0x7ff36ab5":
+        logger.info("Method swapExactETHForTokens(uint256,address[],address,uint256)");
+        break;
+      case "0xfb3bdb41":
+        logger.info("Method swapETHForExactTokens(uint256,address[],address,uint256)");
+        break;
+      case "0x18cbafe5":
+        logger.info("Method swapExactTokensForETH(uint256,uint256,address[],address,uint256)");
+        break;
+      case "0x38ed1739":
+        logger.info("Method swapExactTokensForTokens(uint256,uint256,address[],address,uint256)");
+        System.out.println(split64);
+        break;
+      // sell to uniswap
+      case "0xd9627aa4":
+        break;
+      case "0x683fa88d":
+        logger.info("Method transferFrom(address,address,uint256)");
+        break;
+      case "0x791ac947":
+        break;
+      case "0xa694fc3a":
+        break;
+      default:
+        logger.info("transaction not a contract sell or swap");
+        logger.info(data);
+        break;
+    }
     return inputNode;
   }
 }
