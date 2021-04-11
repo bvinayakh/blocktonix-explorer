@@ -33,11 +33,11 @@ public class BlockchainSync
     try
     {
       List<BigInteger> blockNumbersList = blockOps.getFirstFiveHundredBlocks();
-      // blockNumbersList.parallelStream().forEach(blockNumber -> processBlock(blockNumber));
-      for (BigInteger blockNumber : blockNumbersList)
-      {
-        processBlock(blockNumber);
-      }
+      blockNumbersList.parallelStream().forEach(blockNumber -> processBlock(blockNumber));
+      // for (BigInteger blockNumber : blockNumbersList)
+      // {
+      // processBlock(blockNumber);
+      // }
     }
     catch (InterruptedException | ExecutionException | IOException e)
     {
