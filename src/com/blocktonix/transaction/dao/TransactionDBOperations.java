@@ -22,6 +22,7 @@ import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.EthBlock.TransactionObject;
+import org.web3j.utils.Numeric;
 import com.blocktonix.contract.ContractOperations;
 import com.blocktonix.contract.dao.ContractDBOperations;
 import com.blocktonix.dao.DBEntity;
@@ -111,7 +112,12 @@ public class TransactionDBOperations
             contractNode.putPOJO("ContractAddress", contractAddress);
             contractNode.putPOJO("TransferFrom", transaction.getFrom());
             contractNode.putPOJO("TransferTo", inputNode.get("Address").asText());
-            contractNode.putPOJO("Amount", inputNode.get("Amount").asText());
+            // contractNode.putPOJO("Amount", inputNode.get("Amount").asText());
+            String xferAmountString = String.valueOf(Numeric.toBigInt(inputNode.get("Address").asText()));
+            Integer decimalsInt = Integer.valueOf(contractInfoNode.get("Decimals").asText());
+            String preRoundedAmount = calculateDecimalPlaces(transaction.getHash(), contractAddress, xferAmountString, '.', decimalsInt);
+            String amountRounded = String.valueOf(roundAvoid(Double.valueOf(preRoundedAmount), 3));
+            contractNode.putPOJO("Amount", amountRounded);
             contractNode.putPOJO("TransactionHash", transaction.getHash());
             contractNode.putPOJO("Block", transaction.getBlockNumber());
             // search for contractAbi in database. if not found then get from etherscan
@@ -190,6 +196,12 @@ public class TransactionDBOperations
   // inputNode.putPOJO("Amount", amount.getValue());
   // return inputNode;
   // }
+
+  public double roundAvoid(double value, int places)
+  {
+    double scale = Math.pow(10, places);
+    return Math.round(value * scale) / scale;
+  }
 
   private JsonNode decodeInput(String data, String txnHash)
   {
