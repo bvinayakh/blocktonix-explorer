@@ -6,7 +6,7 @@
         <meta attribute="class-description">
             Wallet Details
         </meta>
-        <id name="id" type="string" column="wallet_balance_at">
+        <id name="id" type="string" column="id">
             <generator class="native" />
         </id>
         <property name="wallet_address" column="wallet_address" type="string" />
