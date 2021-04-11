@@ -113,7 +113,7 @@ public class TransactionDBOperations
             contractNode.putPOJO("TransferFrom", transaction.getFrom());
             contractNode.putPOJO("TransferTo", inputNode.get("Address").asText());
             // contractNode.putPOJO("Amount", inputNode.get("Amount").asText());
-            String xferAmountString = String.valueOf(Numeric.toBigInt(inputNode.get("Address").asText()));
+            String xferAmountString = String.valueOf(Numeric.toBigInt(inputNode.get("Amount").asText()));
             Integer decimalsInt = Integer.valueOf(contractInfoNode.get("Decimals").asText());
             String preRoundedAmount = calculateDecimalPlaces(transaction.getHash(), contractAddress, xferAmountString, '.', decimalsInt);
             String amountRounded = String.valueOf(roundAvoid(Double.valueOf(preRoundedAmount), 3));
