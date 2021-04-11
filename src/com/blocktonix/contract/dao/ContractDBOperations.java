@@ -2,10 +2,7 @@ package com.blocktonix.contract.dao;
 
 import java.util.Iterator;
 import java.util.List;
-import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.persistence.LockModeType;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -26,7 +23,6 @@ public class ContractDBOperations
   private ObjectMapper mapper = null;
   private ObjectNode parentNode = null;
 
-  private Web3j web3 = null;
 
   private Session session = null;
 
@@ -35,11 +31,9 @@ public class ContractDBOperations
   {
     session = DBEntity.getSessionFactory().openSession();
     mapper = new ObjectMapper();
-
-    this.web3 = web3;
   }
 
-  public void storeContract(JsonNode contractNode) throws Exception
+  public void storeContract(JsonNode contractNode)
   {
     ContractDao dao = new ContractDao();
     dao.decimals = contractNode.get("Decimals").asText();
@@ -54,18 +48,10 @@ public class ContractDBOperations
     dao.blockNumber = contractNode.get("Block").asText();
     dao.abi = contractNode.get("ABI").asText();
 
-    // entitymanager.getTransaction().begin();
-    // entitymanager.persist(dao);
-    // entitymanager.getTransaction().commit();
     session.beginTransaction();
     session.save(dao);
     session.getTransaction().commit();
-    // session.close();
 
-    // System.out.println("stored contract " + contractNode.get("Symbol").asText() + " with amount " +
-    // dao.amount + " with transaction hash "
-    // + contractNode.get("TransactionHash").asText() + " in block " +
-    // contractNode.get("Block").asText());
     logger.info("stored contract " + contractNode.get("Symbol").asText() + " with amount " + dao.amount + " with transaction hash "
         + contractNode.get("TransactionHash").asText() + " in block " + contractNode.get("Block").asText());
   }
@@ -77,17 +63,13 @@ public class ContractDBOperations
     dao.contractAddress = contractAddress;
     dao.contractSymbol = contractSymbol;
 
-    // entitymanager.getTransaction().begin();
-    // entitymanager.persist(dao);
-    // entitymanager.getTransaction().commit();
     session.beginTransaction();
     session.save(dao);
     session.getTransaction().commit();
     logger.info("stored contract ABI for " + contractSymbol);
-    // session.close();
   }
 
-  public String getContractAbi(String contractAddress) throws Exception
+  public String getContractAbi(String contractAddress)
   {
     String contractAbi = null;
     EntityManager entityManager = session.getEntityManagerFactory().createEntityManager();

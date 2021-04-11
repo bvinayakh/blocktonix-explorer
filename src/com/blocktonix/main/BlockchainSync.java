@@ -12,10 +12,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.web3j.protocol.Web3j;
-import org.web3j.protocol.http.HttpService;
 import com.blocktonix.block.BlockOperations;
 import com.blocktonix.block.BlockTask;
+import com.blocktonix.utils.Constants;
 
 public class BlockchainSync
 {
@@ -23,15 +22,14 @@ public class BlockchainSync
   public static final Logger logger = LoggerFactory.getLogger(BlockchainSync.class);
 
   private List<String> responsesList = null;
-  private Web3j web3 = null;
+  // private Web3j web3 = null;
 
   public void sync()
   {
     responsesList = new ArrayList<String>();
-    // String infuraEndpoint = "https://mainnet.infura.io/v3/3deb0847ce9942568005689574ba69db";
-    String infuraEndpoint = "http://135.181.213.174:8545";
-    web3 = Web3j.build(new HttpService(infuraEndpoint));
-    BlockOperations blockOps = new BlockOperations(web3);
+    // String infuraEndpoint = "http://135.181.213.174:8545";
+    // web3 = Web3j.build(new HttpService(infuraEndpoint));
+    BlockOperations blockOps = new BlockOperations(Constants.web3);
     try
     {
       List<BigInteger> blockNumbersList = blockOps.getFirstFiveHundredBlocks();
@@ -57,10 +55,9 @@ public class BlockchainSync
 
   private void processBlock(BigInteger blockNumber)
   {
-    // ExecutorService executor = Executors.newCachedThreadPool();
     ExecutorService executor = Executors.newFixedThreadPool(20);
     Collection<Callable<String>> callables = new ArrayList<Callable<String>>();
-    callables.add(new BlockTask(web3, blockNumber));
+    callables.add(new BlockTask(Constants.web3, blockNumber));
     List<Future<String>> futures;
     try
     {
@@ -73,8 +70,8 @@ public class BlockchainSync
       futures.clear();
     }
     catch (InterruptedException | ExecutionException e)
+
     {
-      // e.printStackTrace();
       logger.error("Execution Error while processing block " + e.getMessage());
     }
     executor.shutdown();

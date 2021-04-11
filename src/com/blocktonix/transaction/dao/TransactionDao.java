@@ -16,6 +16,9 @@ public class TransactionDao
   @Column(name = "block_number")
   public String blockNumber = null;
 
+  @Column(name = "contains_contract")
+  public String isContract = null;
+
   @Column(name = "\"from\"")
   public String from = null;
 

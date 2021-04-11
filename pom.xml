@@ -54,6 +54,7 @@
 			<artifactId>contracts</artifactId>
 			<version>5.0.0</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.webjars.npm/web3-eth -->
 
 		<!-- Begin Hibernate -->
 		<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->

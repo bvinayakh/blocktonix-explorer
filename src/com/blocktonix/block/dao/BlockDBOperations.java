@@ -47,7 +47,7 @@ public class BlockDBOperations
 
     session = DBEntity.getSessionFactory().openSession();
 
-    transactionOps = new TransactionOperations(web3);
+    transactionOps = new TransactionOperations();
     transactionDbOps = new TransactionDBOperations(web3);
     transactionReceiptDbOps = new TransactionReceiptDBOperations();
   }
@@ -152,7 +152,7 @@ public class BlockDBOperations
     session.save(dao);
     session.getTransaction().commit();
     // session.close();
-    logger.info("stored block " + block.getNumber());
+    logger.debug("stored block " + block.getNumber());
     // System.out.println("stored block " + block.getNumber());
     // block persisted
 
