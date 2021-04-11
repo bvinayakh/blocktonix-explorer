@@ -1,8 +1,6 @@
 package com.blocktonix.transaction.dao;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,9 +15,6 @@ import org.hibernate.Session;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.web3j.abi.TypeDecoder;
-import org.web3j.abi.datatypes.Address;
-import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.EthBlock.TransactionObject;
 import org.web3j.utils.Numeric;
@@ -27,6 +22,8 @@ import com.blocktonix.contract.ContractOperations;
 import com.blocktonix.contract.dao.ContractDBOperations;
 import com.blocktonix.dao.DBEntity;
 import com.blocktonix.utils.Utilities;
+import com.blocktonix.wallet.WalletOperations;
+import com.blocktonix.wallet.dao.WalletDBOperations;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,15 +38,20 @@ public class TransactionDBOperations
 
   private ContractOperations contractOps = null;
   private ContractDBOperations contractDbOps = null;
+  private WalletOperations walletOps = null;
+  private WalletDBOperations walletDbOps = null;
 
   private Session session = null;
 
-  public TransactionDBOperations(Web3j web3j)
+  public TransactionDBOperations()
   {
     mapper = new ObjectMapper();
 
-    contractOps = new ContractOperations(web3j);
-    contractDbOps = new ContractDBOperations(web3j);
+    contractOps = new ContractOperations();
+    contractDbOps = new ContractDBOperations();
+
+    walletOps = new WalletOperations();
+    walletDbOps = new WalletDBOperations();
 
     session = DBEntity.getSessionFactory().openSession();
   }
@@ -130,6 +132,12 @@ public class TransactionDBOperations
             }
             contractNode.putPOJO("ABI", contractAbi);
             contractDbOps.storeContract(contractNode);
+
+            logger.info("Storing Wallet ETH Balance for wallet " + transaction.getFrom());
+            walletDbOps.storeWalletBalanceETH(transaction.getFrom(), walletOps.getBalance(transaction.getFrom()));
+
+            logger.info("Storing Wallet ETH Balance for wallet " + inputNode.get("Address").asText());
+            walletDbOps.storeWalletBalanceETH(inputNode.get("Address").asText(), walletOps.getBalance(inputNode.get("Address").asText()));
           }
           dao.nonce = String.valueOf(transaction.getNonce());
           dao.r = transaction.getR();
@@ -197,7 +205,7 @@ public class TransactionDBOperations
   // return inputNode;
   // }
 
-  public double roundAvoid(double value, int places)
+  private double roundAvoid(double value, int places)
   {
     double scale = Math.pow(10, places);
     return Math.round(value * scale) / scale;

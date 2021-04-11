@@ -29,8 +29,8 @@
 		<mapping class="com.blocktonix.contract.dao.ContractDao" />
 		<mapping class="com.blocktonix.contract.dao.ContractABIDao" />
 		<mapping class="com.blocktonix.transaction.dao.TransactionDao" />
-		<mapping
-			class="com.blocktonix.transaction.dao.TransactionReceiptDao" />
+		<mapping class="com.blocktonix.transaction.dao.TransactionReceiptDao" />
+		<mapping class="com.blocktonix.wallet.dao.WalletDao" />
 		<!-- <mapping class="com.cez.dao.KubeConfigDAO" /> -->
 
 

@@ -9,9 +9,9 @@ import javax.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.blocktonix.contract.dao.ContractABIDao;
 import com.blocktonix.contract.dao.ContractDao;
 import com.blocktonix.dao.DBEntity;
+import com.blocktonix.utils.TimeUtil;
 
 public class WalletDBOperations
 {
@@ -36,16 +36,16 @@ public class WalletDBOperations
     entityManager.close();
   }
 
-  public void storeContractAbi(String contractAddress, String contractSymbol, String contractAbi)
+  public void storeWalletBalanceETH(String walletAddress, String balance)
   {
-    ContractABIDao dao = new ContractABIDao();
-    dao.contractAbi = contractAbi;
-    dao.contractAddress = contractAddress;
-    dao.contractSymbol = contractSymbol;
+    WalletDao dao = new WalletDao();
+    dao.walletAddress = walletAddress;
+    dao.ethBalance = balance;
+    dao.walletBalanceAt = TimeUtil.getCurrentUTCDateWithTimeZone();
 
     session.beginTransaction();
     session.save(dao);
     session.getTransaction().commit();
-    logger.info("stored contract ABI for " + contractSymbol);
+    logger.info("Wallet ETH Balance updated for " + walletAddress);
   }
 }

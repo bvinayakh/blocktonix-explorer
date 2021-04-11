@@ -27,7 +27,7 @@ public class ContractDBOperations
   private Session session = null;
 
 
-  public ContractDBOperations(Web3j web3)
+  public ContractDBOperations()
   {
     session = DBEntity.getSessionFactory().openSession();
     mapper = new ObjectMapper();

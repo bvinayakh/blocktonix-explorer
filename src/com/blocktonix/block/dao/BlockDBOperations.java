@@ -21,6 +21,7 @@ import com.blocktonix.dao.DBEntity;
 import com.blocktonix.transaction.TransactionOperations;
 import com.blocktonix.transaction.dao.TransactionDBOperations;
 import com.blocktonix.transaction.dao.TransactionReceiptDBOperations;
+import com.blocktonix.utils.Constants;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -30,8 +31,6 @@ public class BlockDBOperations
 
   private ObjectMapper mapper = null;
   private ObjectNode parentNode = null;
-
-  private Web3j web3 = null;
 
   private TransactionOperations transactionOps = null;
   private TransactionDBOperations transactionDbOps = null;
@@ -43,12 +42,10 @@ public class BlockDBOperations
   {
     mapper = new ObjectMapper();
 
-    this.web3 = web3;
-
     session = DBEntity.getSessionFactory().openSession();
 
     transactionOps = new TransactionOperations();
-    transactionDbOps = new TransactionDBOperations(web3);
+    transactionDbOps = new TransactionDBOperations();
     transactionReceiptDbOps = new TransactionReceiptDBOperations();
   }
 
@@ -162,7 +159,7 @@ public class BlockDBOperations
     {
       TransactionObject transaction = (TransactionObject) transactionsIterator.next().get();
       String txhash = transactionDbOps.storeTransaction(transaction);
-      TransactionReceipt receipt = web3.ethGetTransactionReceipt(txhash).send().getResult();
+      TransactionReceipt receipt = Constants.web3.ethGetTransactionReceipt(txhash).send().getResult();
       transactionReceiptDbOps.storeTransactionReceipt(receipt);
     }
 

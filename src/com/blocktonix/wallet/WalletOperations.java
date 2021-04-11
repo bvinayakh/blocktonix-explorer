@@ -14,30 +14,24 @@ public class WalletOperations
 {
   public static final Logger logger = LoggerFactory.getLogger(WalletOperations.class);
 
-
-  public WalletOperations()
+  public String getBalance(String walletAddress)
   {
+    String balance = null;
     try
     {
-      EthGetBalance ethBalance = Constants.web3.ethGetBalance("0xe013d04a4679e364e3d38db30b3d4c55da3bdc2d", DefaultBlockParameterName.LATEST).send();
+      EthGetBalance ethBalance = Constants.web3.ethGetBalance(walletAddress, DefaultBlockParameterName.LATEST).send();
       BigInteger wei = ethBalance.getBalance();
-      System.out.println(Convert.fromWei(wei.toString(), Unit.ETHER));
-
+      balance = String.valueOf(Convert.fromWei(wei.toString(), Unit.ETHER));
     }
     catch (IOException e)
     {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      System.err.println("Error retrieving ETH balance for wallet address " + walletAddress);
     }
-  }
-
-  public void getBalance()
-  {
-    System.out.println("balance");
+    return balance;
   }
 
   public static void main(String[] args)
   {
-    
+    new WalletOperations();
   }
 }
