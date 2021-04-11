@@ -209,7 +209,6 @@ public class TransactionDBOperations
       // }
       // if (isValidContract)
       // {
-     
       String to = null;
       String value = null;
       Method refMethod = null;
@@ -237,22 +236,18 @@ public class TransactionDBOperations
         // swap eth for tokens
         case "0x7ff36ab5":
           logger.info("Method swapExactETHForTokens(uint256,address[],address,uint256)");
-          System.out.println(split64);
-          if (split64.size() == 7)
-          {
-            to = split64.get(2);
-            value = split64.get(0);
-            refMethod = TypeDecoder.class.getDeclaredMethod("decode", String.class, int.class, Class.class);
-            refMethod.setAccessible(true);
-            address = (Address) refMethod.invoke(null, to, 0, Address.class);
-            inputNode.putPOJO("Address", address.toString());
-            amount = (Uint256) refMethod.invoke(null, value, 0, Uint256.class);
-            inputNode.putPOJO("Amount", amount.getValue());
-            // System.out.println("split64");
-            // System.out.println(split64);
-            // System.out.println("txn amount " + amount.getValue());
-            // System.out.println("txn hash " + txnHash);
-          }
+//          System.out.println(split64);
+//          if (split64.size() == 7)
+//          {
+//            to = split64.get(2);
+//            value = split64.get(0);
+//            refMethod = TypeDecoder.class.getDeclaredMethod("decode", String.class, int.class, Class.class);
+//            refMethod.setAccessible(true);
+//            address = (Address) refMethod.invoke(null, to, 0, Address.class);
+//            inputNode.putPOJO("Address", address.toString());
+//            amount = (Uint256) refMethod.invoke(null, value, 0, Uint256.class);
+//            inputNode.putPOJO("Amount", amount.getValue());
+//          }
           break;
         case "0xfb3bdb41":
           logger.info("Method swapETHForExactTokens(uint256,address[],address,uint256)");
