@@ -46,7 +46,6 @@ public class WalletDBOperations
     session.beginTransaction();
     // session.save(dao);
     session.saveOrUpdate(walletAddress, dao);
-    session.saveOrUpdate(dao);
     session.getTransaction().commit();
     logger.info("Wallet ETH Balance updated for " + walletAddress);
   }
