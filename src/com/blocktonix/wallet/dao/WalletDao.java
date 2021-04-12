@@ -12,9 +12,10 @@ import javax.persistence.Table;
 @Table(name = "wallet_information")
 public class WalletDao
 {
-  
+
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "id")
   private int id;
 
   @Column(name = "wallet_address")

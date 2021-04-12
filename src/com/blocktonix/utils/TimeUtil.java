@@ -8,7 +8,7 @@ import java.util.Date;
 
 public class TimeUtil
 {
-  private static String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+  private static String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'";
 
   public static Date getCurrentUTCDateWithTimeZone()
   {
