@@ -44,7 +44,7 @@ public class WalletDBOperations
     dao.walletBalanceAt = TimeUtil.getCurrentUTCDateWithTimeZone();
     dao.transactionHash = txnHash;
     session.beginTransaction();
-    session.saveOrUpdate(dao);
+    session.saveOrUpdate(session.merge(dao));
     session.getTransaction().commit();
     logger.info("Wallet ETH Balance updated for " + walletAddress);
   }
