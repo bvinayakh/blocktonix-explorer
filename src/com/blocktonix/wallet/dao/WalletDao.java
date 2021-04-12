@@ -13,11 +13,11 @@ import javax.persistence.Table;
 public class WalletDao
 {
 
-  @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "id")
   private int id;
 
+  @Id
   @Column(name = "wallet_address")
   public String walletAddress = null;
 
