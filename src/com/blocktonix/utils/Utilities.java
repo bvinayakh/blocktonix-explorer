@@ -46,6 +46,10 @@ public class Utilities
     result = Constants.web3.ethGetBalance(ethAddress, DefaultBlockParameter.valueOf("latest")).sendAsync().get();
     return result;
   }
+  
+  public static void getEthValue()
+  {
+  }
 
   public static String getContractABI(String contractAddress)
   {
