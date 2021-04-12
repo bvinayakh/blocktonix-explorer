@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.blocktonix.block.BlockOperations;
 import com.blocktonix.block.BlockTask;
+import com.blocktonix.utils.ApplicationProperties;
 import com.blocktonix.utils.Constants;
 
 public class BlockchainSync
@@ -27,17 +28,20 @@ public class BlockchainSync
   public void sync()
   {
     responsesList = new ArrayList<String>();
-    // String infuraEndpoint = "http://135.181.213.174:8545";
-    // web3 = Web3j.build(new HttpService(infuraEndpoint));
     BlockOperations blockOps = new BlockOperations(Constants.web3);
     try
     {
       List<BigInteger> blockNumbersList = blockOps.getFirstFiveHundredBlocks();
-      // blockNumbersList.parallelStream().forEach(blockNumber -> processBlock(blockNumber));
-      for (BigInteger blockNumber : blockNumbersList)
+      String runningMode = ApplicationProperties.getProperties("scan.mode");
+      if (runningMode.equalsIgnoreCase("single"))
       {
-        processBlock(blockNumber);
+        for (BigInteger blockNumber : blockNumbersList)
+        {
+          processBlock(blockNumber);
+        }
       }
+      else
+        blockNumbersList.parallelStream().forEach(blockNumber -> processBlock(blockNumber));
     }
     catch (InterruptedException | ExecutionException | IOException e)
     {
