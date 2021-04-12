@@ -24,6 +24,9 @@ public class WalletDao
   @Column(name = "wallet_eth_balance")
   public String ethBalance = null;
 
+  @Column(name = "transaction_hash")
+  public String transactionHash = null;
+
   @Column(name = "wallet_balance_at", columnDefinition = "TIMESTAMP WITH TIME ZONE")
   @GeneratedValue(strategy = GenerationType.AUTO)
   public Date walletBalanceAt = null;

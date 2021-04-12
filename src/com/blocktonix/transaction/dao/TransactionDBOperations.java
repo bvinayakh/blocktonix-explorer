@@ -135,11 +135,11 @@ public class TransactionDBOperations
 
             logger.info("Storing Wallet ETH Balance for wallet " + transaction.getFrom());
             Double fromWallet = Double.valueOf(walletOps.getBalance(transaction.getFrom()));
-            walletDbOps.storeWalletBalanceETH(transaction.getFrom(), String.valueOf(roundAvoid(fromWallet, 3)));
+            walletDbOps.storeWalletBalanceETH(transaction.getFrom(), String.valueOf(roundAvoid(fromWallet, 3)), transaction.getHash());
 
             logger.info("Storing Wallet ETH Balance for wallet " + inputNode.get("Address").asText());
             Double toWallet = Double.valueOf(walletOps.getBalance(inputNode.get("Address").asText()));
-            walletDbOps.storeWalletBalanceETH(inputNode.get("Address").asText(), String.valueOf(roundAvoid(toWallet, 3)));
+            walletDbOps.storeWalletBalanceETH(inputNode.get("Address").asText(), String.valueOf(roundAvoid(toWallet, 3)), transaction.getHash());
           }
           dao.nonce = String.valueOf(transaction.getNonce());
           dao.r = transaction.getR();

@@ -36,13 +36,13 @@ public class WalletDBOperations
     entityManager.close();
   }
 
-  public void storeWalletBalanceETH(String walletAddress, String balance)
+  public void storeWalletBalanceETH(String walletAddress, String balance, String txnHash)
   {
     WalletDao dao = new WalletDao();
     dao.walletAddress = walletAddress;
     dao.ethBalance = balance;
     dao.walletBalanceAt = TimeUtil.getCurrentUTCDateWithTimeZone();
-
+    dao.transactionHash = txnHash;
     session.beginTransaction();
     session.save(dao);
     session.getTransaction().commit();
