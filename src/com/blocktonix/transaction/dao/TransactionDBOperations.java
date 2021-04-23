@@ -256,7 +256,6 @@ public class TransactionDBOperations
         break;
       case "0x38ed1739":
         logger.debug("Method swapExactTokensForTokens(uint256,uint256,address[],address,uint256)");
-        System.out.println(split64);
         break;
       // sell to uniswap
       case "0xd9627aa4":
@@ -269,8 +268,8 @@ public class TransactionDBOperations
       case "0xa694fc3a":
         break;
       default:
-        logger.debug("transaction not a contract sell or swap");
-        logger.debug(data);
+//        logger.debug("transaction not a contract sell or swap");
+//        logger.debug(data);
         break;
     }
     return inputNode;

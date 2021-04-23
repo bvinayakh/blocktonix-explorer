@@ -53,14 +53,11 @@ public class ContractOperations
   {
     String inputData = data;
     String method = inputData.substring(0, 10);
-    System.out.println("Method >>>>>> " + method);
     String to = inputData.substring(10, 74);
     String value = inputData.substring(74);
     Method refMethod = TypeDecoder.class.getDeclaredMethod("decode", String.class, int.class, Class.class);
     refMethod.setAccessible(true);
     Address address = (Address) refMethod.invoke(null, to, 0, Address.class);
-    System.out.println("Address>>>>>> " + address.toString());
     Uint256 amount = (Uint256) refMethod.invoke(null, value, 0, Uint256.class);
-    System.out.println("amount >>>>>> " + amount.getValue());
   }
 }
