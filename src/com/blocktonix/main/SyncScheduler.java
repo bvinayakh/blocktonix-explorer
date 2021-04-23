@@ -58,8 +58,7 @@ public class SyncScheduler implements Job
 
   private void processBlock(BigInteger blockNumber)
   {
-    // ExecutorService executor = Executors.newFixedThreadPool(20);
-    ExecutorService executor = Executors.newCachedThreadPool();
+    ExecutorService executor = Executors.newFixedThreadPool(50);
     Collection<Callable<String>> callables = new ArrayList<Callable<String>>();
     callables.add(new BlockTaskCallable(Constants.web3, blockNumber));
     List<Future<String>> futures;
