@@ -1,15 +1,12 @@
 package com.blocktonix.block;
 
 import java.math.BigInteger;
-import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.Callable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.EthBlock.Block;
 import com.blocktonix.block.dao.BlockDBOperations;
-import com.blocktonix.block.dao.BlockDao;
 
 public class BlockTask implements Callable<String>
 {
@@ -19,14 +16,12 @@ public class BlockTask implements Callable<String>
 
   private BlockOperations blockOps = null;
   private BlockDBOperations blockDbOperations = null;
-  private Web3j web3 = null;
 
   public BlockTask(Web3j web3, BigInteger blockNumber)
   {
     this.blockNumber = blockNumber;
-    this.web3 = web3;
-    blockOps = new BlockOperations(web3);
-    blockDbOperations = new BlockDBOperations(web3);
+    blockOps = new BlockOperations();
+    blockDbOperations = new BlockDBOperations();
     logger.debug("blocknumber:" + this.blockNumber);
   }
 

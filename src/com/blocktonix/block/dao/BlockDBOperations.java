@@ -1,5 +1,6 @@
 package com.blocktonix.block.dao;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -38,7 +39,7 @@ public class BlockDBOperations
 
   private Session session = null;
 
-  public BlockDBOperations(Web3j web3)
+  public BlockDBOperations()
   {
     mapper = new ObjectMapper();
 
@@ -117,7 +118,7 @@ public class BlockDBOperations
     return blockInDb;
   }
 
-  public void storeBlock(Block block) throws Exception
+  public void storeBlock(Block block) throws IOException
   {
     BlockDao dao = new BlockDao();
     dao.difficulty = String.valueOf(block.getDifficulty());
