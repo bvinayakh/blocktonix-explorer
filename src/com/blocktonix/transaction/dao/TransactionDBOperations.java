@@ -160,6 +160,10 @@ public class TransactionDBOperations
     {
       logger.error("Entry exists for Contract " + transaction.getTo() + " in transaction " + transaction.getHash());
     }
+    catch(NumberFormatException e)
+    {
+      logger.error("Error in decoding transaction amount");
+    }
     return transaction.getHash();
   }
 
