@@ -35,6 +35,7 @@ public class SyncScheduler implements Job
       // new Thread(new ForwardSync(blockOps.getForwardBlocks())).start();
       // historical sync
       List<BigInteger> blockNumbersList = blockOps.getFirstTwentyBlocks();
+      System.out.println("Processing blocks " + blockNumbersList);
       String runningMode = ApplicationProperties.getProperties("scan.mode");
       if (runningMode.equalsIgnoreCase("single"))
       {
