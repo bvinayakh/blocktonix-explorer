@@ -1,15 +1,6 @@
 package com.blocktonix.main;
 
-import java.io.IOException;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
@@ -20,10 +11,6 @@ import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.blocktonix.block.BlockOperations;
-import com.blocktonix.block.BlockTaskCallable;
-import com.blocktonix.utils.ApplicationProperties;
-import com.blocktonix.utils.Constants;
 
 public class BlockchainSync
 {
@@ -63,7 +50,7 @@ public class BlockchainSync
     // new BlockchainSync().sync();
     JobDetail job = JobBuilder.newJob(SyncScheduler.class).build();
     Trigger t = TriggerBuilder.newTrigger().withIdentity("syncblocks")
-        .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMinutes(2).repeatForever()).build();
+        .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMinutes(1).repeatForever()).build();
     try
     {
       Scheduler s = StdSchedulerFactory.getDefaultScheduler();
