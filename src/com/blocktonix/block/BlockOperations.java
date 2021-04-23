@@ -50,6 +50,20 @@ public class BlockOperations
     }
     return blockNumbersList;
   }
+  
+  public List<BigInteger> getFirstTwentyBlocks() throws IOException
+  {
+    ArrayList<BigInteger> blockNumbersList = new ArrayList<BigInteger>();
+    // always process 1 block less than the current block
+    BigInteger latestBlockNumber = getLatestBlockNumber();
+    blockNumbersList.add(latestBlockNumber);
+    for (int counter = 1; counter < 20; counter++)
+    {
+      Integer counterInt = Integer.valueOf(counter);
+      blockNumbersList.add(latestBlockNumber.subtract(BigInteger.valueOf(counterInt)));
+    }
+    return blockNumbersList;
+  }
 
   public List<BigInteger> getForwardBlocks() throws IOException
   {

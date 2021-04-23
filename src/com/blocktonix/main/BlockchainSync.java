@@ -10,6 +10,14 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import org.quartz.JobBuilder;
+import org.quartz.JobDetail;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.SimpleScheduleBuilder;
+import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
+import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.blocktonix.block.BlockOperations;
@@ -24,36 +32,48 @@ public class BlockchainSync
 
   private List<String> responsesList = null;
 
-  public void sync()
-  {
-    responsesList = new ArrayList<String>();
-    BlockOperations blockOps = new BlockOperations();
-    try
-    {
-      // forward sync
-      new Thread(new ForwardSync(blockOps.getForwardBlocks())).start();
-      // historical sync
-      List<BigInteger> blockNumbersList = blockOps.getFirstThousandBlocks();
-      String runningMode = ApplicationProperties.getProperties("scan.mode");
-      if (runningMode.equalsIgnoreCase("single"))
-      {
-        for (BigInteger blockNumber : blockNumbersList)
-        {
-          processBlock(blockNumber);
-        }
-      }
-      else
-        blockNumbersList.parallelStream().forEach(blockNumber -> processBlock(blockNumber));
-    }
-    catch (IOException e)
-    {
-      e.printStackTrace();
-    }
-  }
+  // public void sync()
+  // {
+  // BlockOperations blockOps = new BlockOperations();
+  // try
+  // {
+  // // forward sync
+  // // new Thread(new ForwardSync(blockOps.getForwardBlocks())).start();
+  // // historical sync
+  // List<BigInteger> blockNumbersList = blockOps.getFirstThousandBlocks();
+  // String runningMode = ApplicationProperties.getProperties("scan.mode");
+  // if (runningMode.equalsIgnoreCase("single"))
+  // {
+  // for (BigInteger blockNumber : blockNumbersList)
+  // {
+  // processBlock(blockNumber);
+  // }
+  // }
+  // else
+  // blockNumbersList.parallelStream().forEach(blockNumber -> processBlock(blockNumber));
+  // }
+  // catch (IOException e)
+  // {
+  // e.printStackTrace();
+  // }
+  // }
 
   public static void main(String[] args)
   {
-    new BlockchainSync().sync();
+    // new BlockchainSync().sync();
+    JobDetail job = JobBuilder.newJob(SyncScheduler.class).build();
+    Trigger t = TriggerBuilder.newTrigger().withIdentity("syncblocks")
+        .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMinutes(2).repeatForever()).build();
+    try
+    {
+      Scheduler s = StdSchedulerFactory.getDefaultScheduler();
+      s.start();
+      s.scheduleJob(job, t);
+    }
+    catch (SchedulerException e)
+    {
+      e.printStackTrace();
+    }
 
   }
 
