@@ -78,29 +78,29 @@ public class BlockchainSync
   }
 
 
-  private void processBlock(BigInteger blockNumber)
-  {
-    ExecutorService executor = Executors.newFixedThreadPool(20);
-    Collection<Callable<String>> callables = new ArrayList<Callable<String>>();
-    callables.add(new BlockTaskCallable(Constants.web3, blockNumber));
-    List<Future<String>> futures;
-    try
-    {
-      futures = executor.invokeAll(callables);
-      for (Future<String> future : futures)
-      {
-        String responseContent = future.get();
-        responsesList.add(responseContent);
-      }
-      futures.clear();
-    }
-    catch (InterruptedException | ExecutionException e)
-
-    {
-      logger.error("Execution Error while processing block " + blockNumber + e.getMessage());
-    }
-    executor.shutdown();
-  }
+  // private void processBlock(BigInteger blockNumber)
+  // {
+  // ExecutorService executor = Executors.newFixedThreadPool(20);
+  // Collection<Callable<String>> callables = new ArrayList<Callable<String>>();
+  // callables.add(new BlockTaskCallable(Constants.web3, blockNumber));
+  // List<Future<String>> futures;
+  // try
+  // {
+  // futures = executor.invokeAll(callables);
+  // for (Future<String> future : futures)
+  // {
+  // String responseContent = future.get();
+  // responsesList.add(responseContent);
+  // }
+  // futures.clear();
+  // }
+  // catch (InterruptedException | ExecutionException e)
+  //
+  // {
+  // logger.error("Execution Error while processing block " + blockNumber + e.getMessage());
+  // }
+  // executor.shutdown();
+  // }
 
 
 }
