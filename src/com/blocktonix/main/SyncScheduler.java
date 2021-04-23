@@ -11,6 +11,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import javax.persistence.PersistenceException;
+import org.hibernate.exception.ConstraintViolationException;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -57,7 +58,8 @@ public class SyncScheduler implements Job
 
   private void processBlock(BigInteger blockNumber)
   {
-    ExecutorService executor = Executors.newFixedThreadPool(20);
+    // ExecutorService executor = Executors.newFixedThreadPool(20);
+    ExecutorService executor = Executors.newCachedThreadPool();
     Collection<Callable<String>> callables = new ArrayList<Callable<String>>();
     callables.add(new BlockTaskCallable(Constants.web3, blockNumber));
     List<Future<String>> futures;
@@ -72,9 +74,9 @@ public class SyncScheduler implements Job
     }
     catch (InterruptedException | ExecutionException e)
     {
-      logger.error("Execution Error while processing block " + blockNumber + e.getMessage());
+      logger.error("Execution Error while processing block " + blockNumber + " " + e.getMessage());
     }
-    catch (PersistenceException e)
+    catch (ConstraintViolationException e)
     {
       logger.error("Error while trying to persist block " + blockNumber + " " + e.getMessage());
     }
