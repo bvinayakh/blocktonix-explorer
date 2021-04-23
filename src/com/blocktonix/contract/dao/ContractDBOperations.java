@@ -66,7 +66,7 @@ public class ContractDBOperations
     session.beginTransaction();
     session.save(dao);
     session.getTransaction().commit();
-    logger.info("stored contract ABI for " + contractSymbol);
+    logger.debug("stored contract ABI for " + contractSymbol);
   }
 
   public String getContractAbi(String contractAddress)

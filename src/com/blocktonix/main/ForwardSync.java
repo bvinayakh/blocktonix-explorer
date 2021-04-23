@@ -37,7 +37,7 @@ public class ForwardSync implements Runnable
       }
       catch (IOException e)
       {
-        System.err.println("Exception in getting block information " + e.getMessage());
+        logger.error("Exception in getting block information " + e.getMessage());
       }
     }
   }
