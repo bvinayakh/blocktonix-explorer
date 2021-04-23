@@ -18,7 +18,7 @@ public class BlockOperations
   public BlockOperations()
   {}
 
-  public BigInteger getLatestBlockNumber() throws IOException 
+  public BigInteger getLatestBlockNumber() throws IOException
   {
     return Constants.web3.ethBlockNumber().send().getBlockNumber();
     // return web3.ethBlockNumber().sendAsync().get().getBlockNumber();
@@ -37,7 +37,7 @@ public class BlockOperations
     // true).sendAsync().get();
   }
 
-  public List<BigInteger> getFirstThousandBlocks() throws IOException 
+  public List<BigInteger> getFirstThousandBlocks() throws IOException
   {
     ArrayList<BigInteger> blockNumbersList = new ArrayList<BigInteger>();
     BigInteger latestBlockNumber = getLatestBlockNumber();
@@ -46,6 +46,19 @@ public class BlockOperations
     {
       Integer counterInt = Integer.valueOf(counter);
       blockNumbersList.add(latestBlockNumber.subtract(BigInteger.valueOf(counterInt)));
+    }
+    return blockNumbersList;
+  }
+
+  public List<BigInteger> getForwardBlocks() throws IOException
+  {
+    ArrayList<BigInteger> blockNumbersList = new ArrayList<BigInteger>();
+    BigInteger latestBlockNumber = getLatestBlockNumber();
+    blockNumbersList.add(latestBlockNumber);
+    for (int counter = 1; counter < 100000; counter++)
+    {
+      Integer counterInt = Integer.valueOf(counter);
+      blockNumbersList.add(latestBlockNumber.add(BigInteger.valueOf(counterInt)));
     }
     return blockNumbersList;
 

@@ -10,19 +10,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import org.quartz.JobBuilder;
-import org.quartz.JobDetail;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.SimpleScheduleBuilder;
-import org.quartz.Trigger;
-import org.quartz.TriggerBuilder;
-import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.blocktonix.block.BlockOperations;
 import com.blocktonix.block.BlockTask;
-import com.blocktonix.block.tasks.CheckLatestBlock;
 import com.blocktonix.utils.ApplicationProperties;
 import com.blocktonix.utils.Constants;
 
@@ -40,7 +31,7 @@ public class BlockchainSync
     try
     {
       // forward sync
-      processLatestBlock();
+      new Thread(new ForwardSync(blockOps.getForwardBlocks())).start();
       // historical sync
       List<BigInteger> blockNumbersList = blockOps.getFirstThousandBlocks();
       String runningMode = ApplicationProperties.getProperties("scan.mode");
@@ -59,25 +50,6 @@ public class BlockchainSync
       e.printStackTrace();
     }
   }
-
-  private void processLatestBlock()
-  {
-    JobDetail job = JobBuilder.newJob(CheckLatestBlock.class).build();
-    Trigger t = TriggerBuilder.newTrigger().withIdentity("checklatestblock")
-        .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(10).repeatForever()).build();
-    try
-    {
-      Scheduler s = StdSchedulerFactory.getDefaultScheduler();
-      s.start();
-      s.scheduleJob(job, t);
-    }
-    catch (SchedulerException e)
-    {
-      logger.error("Error processing latest block " + e.getMessage());
-    }
-
-  }
-
 
   public static void main(String[] args)
   {
