@@ -31,7 +31,7 @@ public class ForwardSync implements Runnable
       Block block;
       try
       {
-        logger.info("Fetching forward block : "+ blockNumber);
+        System.out.println("Fetching forward block : "+ blockNumber);
         block = blockOps.getBlock(blockNumber).getBlock();
         blockDbOperations.storeBlock(block);
       }
