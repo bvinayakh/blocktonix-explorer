@@ -22,7 +22,7 @@ public class BlockTask implements Callable<String>
     this.blockNumber = blockNumber;
     blockOps = new BlockOperations();
     blockDbOperations = new BlockDBOperations();
-    logger.debug("blocknumber:" + this.blockNumber);
+    System.out.println("blocknumber:" + this.blockNumber);
   }
 
   @Override
