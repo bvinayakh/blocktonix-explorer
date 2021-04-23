@@ -34,18 +34,11 @@ public class ForwardSync implements Runnable
         logger.info("Fetching forward block : "+ blockNumber);
         block = blockOps.getBlock(blockNumber).getBlock();
         blockDbOperations.storeBlock(block);
-        Thread.sleep(3000);
       }
       catch (IOException e)
       {
         System.err.println("Exception in getting block information " + e.getMessage());
       }
-      catch (InterruptedException e)
-      {
-        System.err.println("Exception in processing block thread " + e.getMessage());
-      }
-
     }
-
   }
 }
