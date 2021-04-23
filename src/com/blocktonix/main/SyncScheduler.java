@@ -10,6 +10,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import javax.persistence.PersistenceException;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -72,6 +73,10 @@ public class SyncScheduler implements Job
     catch (InterruptedException | ExecutionException e)
     {
       logger.error("Execution Error while processing block " + blockNumber + e.getMessage());
+    }
+    catch (PersistenceException e)
+    {
+      logger.error("Error while trying to persist block " + blockNumber + " " + e.getMessage());
     }
     executor.shutdown();
   }
