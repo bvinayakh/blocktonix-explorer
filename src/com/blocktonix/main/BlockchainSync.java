@@ -42,7 +42,7 @@ public class BlockchainSync
       // forward sync
       processLatestBlock();
       // historical sync
-      List<BigInteger> blockNumbersList = blockOps.getFirstFiveHundredBlocks();
+      List<BigInteger> blockNumbersList = blockOps.getFirstThousandBlocks();
       String runningMode = ApplicationProperties.getProperties("scan.mode");
       if (runningMode.equalsIgnoreCase("single"))
       {

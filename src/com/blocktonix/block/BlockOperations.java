@@ -37,12 +37,12 @@ public class BlockOperations
     // true).sendAsync().get();
   }
 
-  public List<BigInteger> getFirstFiveHundredBlocks() throws IOException 
+  public List<BigInteger> getFirstThousandBlocks() throws IOException 
   {
     ArrayList<BigInteger> blockNumbersList = new ArrayList<BigInteger>();
     BigInteger latestBlockNumber = getLatestBlockNumber();
     blockNumbersList.add(latestBlockNumber);
-    for (int counter = 1; counter < 500; counter++)
+    for (int counter = 1; counter < 1000; counter++)
     {
       Integer counterInt = Integer.valueOf(counter);
       blockNumbersList.add(latestBlockNumber.subtract(BigInteger.valueOf(counterInt)));
