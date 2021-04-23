@@ -77,7 +77,7 @@ public class BlockchainSync
     catch (InterruptedException | ExecutionException e)
 
     {
-      logger.error("Execution Error while processing block " + e.getMessage());
+      logger.error("Execution Error while processing block " + blockNumber + e.getMessage());
     }
     executor.shutdown();
   }
