@@ -13,7 +13,7 @@ import java.util.concurrent.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.blocktonix.block.BlockOperations;
-import com.blocktonix.block.BlockTask;
+import com.blocktonix.block.BlockTaskCallable;
 import com.blocktonix.utils.ApplicationProperties;
 import com.blocktonix.utils.Constants;
 
@@ -62,7 +62,7 @@ public class BlockchainSync
   {
     ExecutorService executor = Executors.newFixedThreadPool(20);
     Collection<Callable<String>> callables = new ArrayList<Callable<String>>();
-    callables.add(new BlockTask(Constants.web3, blockNumber));
+    callables.add(new BlockTaskCallable(Constants.web3, blockNumber));
     List<Future<String>> futures;
     try
     {

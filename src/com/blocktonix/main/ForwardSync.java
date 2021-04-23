@@ -1,22 +1,17 @@
 package com.blocktonix.main;
 
-import java.io.IOException;
 import java.math.BigInteger;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.web3j.protocol.core.methods.response.EthBlock.Block;
-import com.blocktonix.block.BlockOperations;
-import com.blocktonix.block.dao.BlockDBOperations;
+import com.blocktonix.block.BlockTaskRunnable;
+import com.blocktonix.utils.Constants;
 
 public class ForwardSync implements Runnable
 {
   public static final Logger logger = LoggerFactory.getLogger(ForwardSync.class);
-  
-  private List<BigInteger> forwardBlockNumbersList = null;
 
-  private BlockOperations blockOps = new BlockOperations();
-  private BlockDBOperations blockDbOperations = new BlockDBOperations();
+  private List<BigInteger> forwardBlockNumbersList = null;
 
   public ForwardSync(List<BigInteger> blocksList)
   {
@@ -28,17 +23,21 @@ public class ForwardSync implements Runnable
   {
     for (BigInteger blockNumber : forwardBlockNumbersList)
     {
-      Block block;
+      System.out.println("processing forward block number : " + blockNumber);
+      processBlock(blockNumber);
       try
       {
-        System.out.println("Fetching forward block : "+ blockNumber);
-        block = blockOps.getBlock(blockNumber).getBlock();
-        blockDbOperations.storeBlock(block);
+        Thread.sleep(10000);
       }
-      catch (IOException e)
+      catch (InterruptedException e)
       {
-        logger.error("Exception in getting block information " + e.getMessage());
+        e.printStackTrace();
       }
     }
+  }
+
+  private void processBlock(BigInteger blockNumber)
+  {
+    new Thread(new BlockTaskRunnable(Constants.web3, blockNumber)).start();
   }
 }

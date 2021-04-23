@@ -8,21 +8,21 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.EthBlock.Block;
 import com.blocktonix.block.dao.BlockDBOperations;
 
-public class BlockTask implements Callable<String>
+public class BlockTaskCallable implements Callable<String>
 {
-  public static final Logger logger = LoggerFactory.getLogger(BlockTask.class);
+  public static final Logger logger = LoggerFactory.getLogger(BlockTaskCallable.class);
 
   private BigInteger blockNumber;
 
   private BlockOperations blockOps = null;
   private BlockDBOperations blockDbOperations = null;
 
-  public BlockTask(Web3j web3, BigInteger blockNumber)
+  public BlockTaskCallable(Web3j web3, BigInteger blockNumber)
   {
     this.blockNumber = blockNumber;
     blockOps = new BlockOperations();
     blockDbOperations = new BlockDBOperations();
-    System.out.println("blocknumber:" + this.blockNumber);
+    System.out.println("processing historical block number :" + this.blockNumber);
   }
 
   @Override

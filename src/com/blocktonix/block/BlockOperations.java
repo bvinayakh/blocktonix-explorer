@@ -40,7 +40,8 @@ public class BlockOperations
   public List<BigInteger> getFirstThousandBlocks() throws IOException
   {
     ArrayList<BigInteger> blockNumbersList = new ArrayList<BigInteger>();
-    BigInteger latestBlockNumber = getLatestBlockNumber();
+    // always process 1 block less than the current block
+    BigInteger latestBlockNumber = getLatestBlockNumber().subtract(BigInteger.valueOf(1));
     blockNumbersList.add(latestBlockNumber);
     for (int counter = 1; counter < 1000; counter++)
     {
