@@ -137,18 +137,8 @@ public class BlockDBOperations
     dao.size = String.valueOf(block.getSize());
     dao.stateRoot = block.getStateRoot();
     // dao.timestamp = String.valueOf(block.getTimestamp());
-    dao.timestamp = timestamp;
-    StringBuffer txns = new StringBuffer();
     dao.totalDifficulty = String.valueOf(block.getTotalDifficulty());
     List<TransactionResult> transactionsList = block.getTransactions();
-    Iterator<TransactionResult> txnIter = transactionsList.iterator();
-    while (txnIter.hasNext())
-    {
-      TransactionObject result = (TransactionObject) txnIter.next().get();
-      txns.append(result.getHash());
-      txns.append(",");
-    }
-    dao.transactions = txns.toString();
     dao.transactionsRoot = block.getTransactionsRoot();
     dao.uncles = StringUtils.join(block.getUncles(), ",");
 
