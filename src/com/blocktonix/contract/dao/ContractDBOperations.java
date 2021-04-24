@@ -24,13 +24,9 @@ public class ContractDBOperations
   private ObjectNode parentNode = null;
 
 
-  private Session session = null;
-
-
   public ContractDBOperations()
   {
-//    session = DBSession.getSessionFactory().openSession();
-    session = DBSession.getSession();
+    // session = DBSession.getSessionFactory().openSession();
     mapper = new ObjectMapper();
   }
 
@@ -48,10 +44,11 @@ public class ContractDBOperations
     dao.transactionHash = contractNode.get("TransactionHash").asText();
     dao.blockNumber = contractNode.get("Block").asText();
     dao.abi = contractNode.get("ABI").asText();
-
+    Session session = DBSession.getSessionFactory().openSession();
     session.beginTransaction();
     session.save(dao);
     session.getTransaction().commit();
+    if (session != null) session.close();
 
     logger.info("stored contract " + contractNode.get("Symbol").asText() + " with amount " + dao.amount + " with transaction hash "
         + contractNode.get("TransactionHash").asText() + " in block " + contractNode.get("Block").asText());
@@ -63,16 +60,18 @@ public class ContractDBOperations
     dao.contractAbi = contractAbi;
     dao.contractAddress = contractAddress;
     dao.contractSymbol = contractSymbol;
-
+    Session session = DBSession.getSessionFactory().openSession();
     session.beginTransaction();
     session.save(dao);
     session.getTransaction().commit();
+    if (session != null) session.close();
     logger.info("stored contract ABI for " + contractSymbol);
   }
 
   public String getContractAbi(String contractAddress)
   {
     String contractAbi = null;
+    Session session = DBSession.getSessionFactory().openSession();
     EntityManager entityManager = session.getEntityManagerFactory().createEntityManager();
     CriteriaBuilder cb = entityManager.getCriteriaBuilder();
     CriteriaQuery<ContractABIDao> q = cb.createQuery(ContractABIDao.class);
@@ -87,6 +86,7 @@ public class ContractDBOperations
       if (dao.contractAddress.equalsIgnoreCase(contractAddress)) contractAbi = dao.contractAbi;
     }
     entityManager.close();
+    if (session != null) session.close();
     return contractAbi;
   }
 }

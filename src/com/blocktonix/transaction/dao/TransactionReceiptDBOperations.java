@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.persistence.LockModeType;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -15,9 +13,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.web3j.protocol.core.methods.response.EthBlock.Block;
-import org.web3j.protocol.core.methods.response.EthBlock.TransactionObject;
-import org.web3j.protocol.core.methods.response.EthBlock.TransactionResult;
 import org.web3j.protocol.core.methods.response.Log;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import com.blocktonix.dao.DBSession;
@@ -33,18 +28,15 @@ public class TransactionReceiptDBOperations
   private ObjectMapper mapper = null;
   private ObjectNode parentNode = null;
 
-  private Session session = null;
-
   public TransactionReceiptDBOperations()
   {
     mapper = new ObjectMapper();
-    session = DBSession.getSession();
-
   }
 
   public JsonNode getBlock(String reportId) throws JsonProcessingException, IOException
   {
     parentNode = mapper.createObjectNode();
+    Session session = DBSession.getSessionFactory().openSession();
     EntityManager entityManager = session.getEntityManagerFactory().createEntityManager();
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<TransactionDao> criteria = criteriaBuilder.createQuery(TransactionDao.class);
@@ -64,6 +56,7 @@ public class TransactionReceiptDBOperations
       TransactionDao resultDao = resultIterator.next();
     }
     entityManager.close();
+    if (session != null) session.close();
     return parentNode;
   }
 
@@ -93,10 +86,11 @@ public class TransactionReceiptDBOperations
     dao.transactionHash = receipt.getTransactionHash();
     dao.transactionIndex = String.valueOf(receipt.getTransactionIndex());
     dao.transactionStatus = receipt.getStatus();
-
+    Session session = DBSession.getSessionFactory().openSession();
     session.beginTransaction();
     session.save(dao);
     session.getTransaction().commit();
+    if (session != null) session.close();
     logger.info("stored transaction receipt " + receipt.getTransactionHash() + " for transaction " + receipt.getTransactionHash() + " from block "
         + receipt.getBlockNumber());
   }

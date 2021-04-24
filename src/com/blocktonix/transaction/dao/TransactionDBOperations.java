@@ -41,8 +41,6 @@ public class TransactionDBOperations
   private WalletOperations walletOps = null;
   private WalletDBOperations walletDbOps = null;
 
-  private Session session = null;
-
   public TransactionDBOperations()
   {
     mapper = new ObjectMapper();
@@ -52,13 +50,12 @@ public class TransactionDBOperations
 
     walletOps = new WalletOperations();
     walletDbOps = new WalletDBOperations();
-
-    session = DBSession.getSession();
   }
 
   public JsonNode getBlock(String reportId) throws JsonProcessingException, IOException
   {
     parentNode = mapper.createObjectNode();
+    Session session = DBSession.getSessionFactory().openSession();
     EntityManager entityManager = session.getEntityManagerFactory().createEntityManager();
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<TransactionDao> criteria = criteriaBuilder.createQuery(TransactionDao.class);
@@ -78,6 +75,7 @@ public class TransactionDBOperations
       TransactionDao resultDao = resultIterator.next();
     }
     entityManager.close();
+    if (session != null) session.close();
     return parentNode;
   }
 
@@ -148,10 +146,11 @@ public class TransactionDBOperations
           dao.transactionIndex = String.valueOf(transaction.getTransactionIndex());
           dao.v = String.valueOf(transaction.getV());
           dao.value = String.valueOf(transaction.getValue());
-
+          Session session = DBSession.getSessionFactory().openSession();
           session.beginTransaction();
           session.save(dao);
           session.getTransaction().commit();
+          if (session != null) session.close();
           logger.info("stored transaction " + transaction.getHash() + " from block " + transaction.getBlockNumber());
         }
       }

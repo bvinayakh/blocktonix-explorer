@@ -17,15 +17,12 @@ public class WalletDBOperations
 {
   public static final Logger logger = LoggerFactory.getLogger(WalletDBOperations.class);
 
-  private Session session = null;
-
   public WalletDBOperations()
-  {
-    session = DBSession.getSession();
-  }
+  {}
 
   public void getWalletInformation()
   {
+    Session session = DBSession.getSessionFactory().openSession();
     EntityManager entityManager = session.getEntityManagerFactory().createEntityManager();
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<ContractDao> criteriaQuery = criteriaBuilder.createQuery(ContractDao.class);
@@ -34,6 +31,7 @@ public class WalletDBOperations
     TypedQuery<ContractDao> query = entityManager.createQuery(criteriaQuery);
     List<ContractDao> blocksList = query.getResultList();
     entityManager.close();
+    if (session != null) session.close();
   }
 
   public void storeWalletBalanceETH(String walletAddress, String balance, String txnHash)
@@ -43,9 +41,11 @@ public class WalletDBOperations
     dao.ethBalance = balance;
     dao.walletBalanceAt = TimeUtil.getCurrentUTCDateWithTimeZone();
     dao.transactionHash = txnHash;
+    Session session = DBSession.getSessionFactory().openSession();
     session.beginTransaction();
     session.saveOrUpdate(session.merge(dao));
     session.getTransaction().commit();
+    if (session != null) session.close();
     logger.info("Wallet ETH Balance updated for " + walletAddress);
   }
 }

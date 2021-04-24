@@ -37,42 +37,16 @@ public class BlockDBOperations
   private TransactionDBOperations transactionDbOps = null;
   private TransactionReceiptDBOperations transactionReceiptDbOps = null;
 
-  private Session session = null;
-
   public BlockDBOperations()
   {
     mapper = new ObjectMapper();
 
-//    session = DBSession.getSessionFactory().openSession();
-    session = DBSession.getSession();
+    // session = DBSession.getSessionFactory().openSession();
 
     transactionOps = new TransactionOperations();
     transactionDbOps = new TransactionDBOperations();
     transactionReceiptDbOps = new TransactionReceiptDBOperations();
   }
-
-  // public JsonNode getBlock(BigInteger blockNumber) throws JsonProcessingException, IOException
-  // {
-  // parentNode = mapper.createObjectNode();
-  // CriteriaBuilder criteriaBuilder = entitymanager.getCriteriaBuilder();
-  // CriteriaQuery<BlockDao> criteria = criteriaBuilder.createQuery(BlockDao.class);
-  // // select * equivalent
-  // Root<BlockDao> selectAll = criteria.from(BlockDao.class);
-  //
-  // ParameterExpression<String> queryParameters = criteriaBuilder.parameter(String.class);
-  // criteria.select(selectAll).where(criteriaBuilder.equal(selectAll.get("tid"), queryParameters));
-  //
-  // TypedQuery<BlockDao> query = entitymanager.createQuery(criteria);
-  // query.setParameter(queryParameters, reportId);
-  //
-  // List<BlockDao> resultList = query.getResultList();
-  // Iterator<BlockDao> resultIterator = resultList.iterator();
-  // while (resultIterator.hasNext())
-  // {
-  // BlockDao resultDao = resultIterator.next();
-  // }
-  // return parentNode;
-  // }
 
   public List<String> getBlocksInDb()
   {
@@ -102,6 +76,7 @@ public class BlockDBOperations
     // if (blockList.size() > 0) blockNumber = query.getResultList().get(0).number;
     // return blockNumber;
 
+    Session session = DBSession.getSessionFactory().openSession();
     List<String> blockInDb = new ArrayList<>();
     EntityManager entityManager = session.getEntityManagerFactory().createEntityManager();
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -121,6 +96,7 @@ public class BlockDBOperations
 
   public void storeBlock(Block block) throws IOException
   {
+    Session session = DBSession.getSessionFactory().openSession();
     BlockDao dao = new BlockDao();
     dao.difficulty = String.valueOf(block.getDifficulty());
     dao.extraData = block.getExtraData();
@@ -153,13 +129,10 @@ public class BlockDBOperations
     dao.uncles = StringUtils.join(block.getUncles(), ",");
 
     // persisting block
-    // entitymanager.getTransaction().begin();
-    // entitymanager.persist(dao);
-    // entitymanager.getTransaction().commit();
     session.beginTransaction();
     session.save(dao);
     session.getTransaction().commit();
-    // session.close();
+    session.close();
     logger.info("stored block " + block.getNumber());
     // System.out.println("stored block " + block.getNumber());
     // block persisted
