@@ -68,7 +68,7 @@ public class Utilities
     {
       logger.error("IOException getting Contract ABI from Etherscan " + e.getLocalizedMessage());
     }
-    logger.debug("Contract ABI from Etherscan for " + contractAddress);
+    logger.info("Contract ABI from Etherscan for " + contractAddress);
     return responseValue;
   }
 

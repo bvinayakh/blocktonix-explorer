@@ -4,7 +4,7 @@ import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.protocol.Web3j;
-import com.blocktonix.dao.DBEntity;
+import com.blocktonix.dao.DBSession;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -22,7 +22,7 @@ public class SwapDBOperations
 
   public SwapDBOperations(Web3j web3)
   {
-    session = DBEntity.getSessionFactory().openSession();
+    session = DBSession.getSession();
     mapper = new ObjectMapper();
   }
 

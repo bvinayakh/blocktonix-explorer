@@ -1,5 +1,10 @@
 package com.blocktonix.main;
 
+/***
+ * Scan all the block numbers in database in descending order and fill-in the missing blocks
+ * 
+ * @author sv
+ */
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -10,7 +15,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import javax.persistence.PersistenceException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -22,10 +26,10 @@ import com.blocktonix.block.BlockTaskCallable;
 import com.blocktonix.utils.ApplicationProperties;
 import com.blocktonix.utils.Constants;
 
-public class SyncScheduler implements Job
+public class SyncSchedulerMissingBlocks implements Job
 {
 
-  public static final Logger logger = LoggerFactory.getLogger(SyncScheduler.class);
+  public static final Logger logger = LoggerFactory.getLogger(SyncSchedulerMissingBlocks.class);
 
   @Override
   public void execute(JobExecutionContext context) throws JobExecutionException
@@ -33,9 +37,6 @@ public class SyncScheduler implements Job
     BlockOperations blockOps = new BlockOperations();
     try
     {
-      // forward sync
-      // new Thread(new ForwardSync(blockOps.getForwardBlocks())).start();
-      // historical sync
       List<BigInteger> blockNumbersList = blockOps.getFirstTenBlocks();
       System.out.println("Processing blocks " + blockNumbersList);
       String runningMode = ApplicationProperties.getProperties("scan.mode");

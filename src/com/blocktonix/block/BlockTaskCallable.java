@@ -23,6 +23,7 @@ public class BlockTaskCallable implements Callable<String>
     blockOps = new BlockOperations();
     blockDbOperations = new BlockDBOperations();
     System.out.println("processing historical block number :" + this.blockNumber);
+    logger.info("processing historical block number :" + this.blockNumber);
   }
 
   @Override
@@ -37,6 +38,7 @@ public class BlockTaskCallable implements Callable<String>
       Block block = blockOps.getBlock(blockNumber).getBlock();
       blockDbOperations.storeBlock(block);
       output = "Block " + blockNumber + " with hash " + block.getHash() + " processed";
+      logger.info(output);
     }
     else
     {

@@ -10,7 +10,7 @@ import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.blocktonix.contract.dao.ContractDao;
-import com.blocktonix.dao.DBEntity;
+import com.blocktonix.dao.DBSession;
 import com.blocktonix.utils.TimeUtil;
 
 public class WalletDBOperations
@@ -21,7 +21,7 @@ public class WalletDBOperations
 
   public WalletDBOperations()
   {
-    session = DBEntity.getSessionFactory().openSession();
+    session = DBSession.getSession();
   }
 
   public void getWalletInformation()

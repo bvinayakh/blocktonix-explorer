@@ -20,7 +20,7 @@ import org.web3j.protocol.core.methods.response.EthBlock.TransactionObject;
 import org.web3j.utils.Numeric;
 import com.blocktonix.contract.ContractOperations;
 import com.blocktonix.contract.dao.ContractDBOperations;
-import com.blocktonix.dao.DBEntity;
+import com.blocktonix.dao.DBSession;
 import com.blocktonix.utils.Utilities;
 import com.blocktonix.wallet.WalletOperations;
 import com.blocktonix.wallet.dao.WalletDBOperations;
@@ -53,7 +53,7 @@ public class TransactionDBOperations
     walletOps = new WalletOperations();
     walletDbOps = new WalletDBOperations();
 
-    session = DBEntity.getSessionFactory().openSession();
+    session = DBSession.getSession();
   }
 
   public JsonNode getBlock(String reportId) throws JsonProcessingException, IOException
@@ -126,18 +126,18 @@ public class TransactionDBOperations
             String contractAbi = contractDbOps.getContractAbi(contractAddress);
             if (contractAbi == null)
             {
-              logger.debug("Fetching Contract ABI for contract " + contractAddress + " from Etherscan");
+              logger.info("Fetching Contract ABI for contract " + contractAddress + " from Etherscan");
               contractAbi = Utilities.getContractABI(contractAddress);
               contractDbOps.storeContractAbi(contractAddress, contractInfoNode.get("Symbol").asText(), contractAbi);
             }
             contractNode.putPOJO("ABI", contractAbi);
             contractDbOps.storeContract(contractNode);
 
-            logger.debug("Storing Wallet ETH Balance for wallet " + transaction.getFrom());
+            logger.info("Storing Wallet ETH Balance for wallet " + transaction.getFrom());
             Double fromWallet = Double.valueOf(walletOps.getBalance(transaction.getFrom()));
             walletDbOps.storeWalletBalanceETH(transaction.getFrom(), String.valueOf(roundAvoid(fromWallet, 3)), transaction.getHash());
 
-            logger.debug("Storing Wallet ETH Balance for wallet " + inputNode.get("Address").asText());
+            logger.info("Storing Wallet ETH Balance for wallet " + inputNode.get("Address").asText());
             Double toWallet = Double.valueOf(walletOps.getBalance(inputNode.get("Address").asText()));
             walletDbOps.storeWalletBalanceETH(inputNode.get("Address").asText(), String.valueOf(roundAvoid(toWallet, 3)), transaction.getHash());
           }
@@ -152,7 +152,7 @@ public class TransactionDBOperations
           session.beginTransaction();
           session.save(dao);
           session.getTransaction().commit();
-          logger.debug("stored transaction " + transaction.getHash() + " from block " + transaction.getBlockNumber());
+          logger.info("stored transaction " + transaction.getHash() + " from block " + transaction.getBlockNumber());
         }
       }
     }
@@ -160,7 +160,7 @@ public class TransactionDBOperations
     {
       logger.error("Entry exists for Contract " + transaction.getTo() + " in transaction " + transaction.getHash());
     }
-    catch(NumberFormatException e)
+    catch (NumberFormatException e)
     {
       logger.error("Error in decoding transaction amount");
     }
@@ -238,7 +238,7 @@ public class TransactionDBOperations
     {
       // valid
       case "0xa9059cbb":
-        logger.debug("processing transaction method 0xa9059cbb");
+        logger.info("processing transaction method 0xa9059cbb");
         inputNode = mapper.createObjectNode();
         inputNode.putPOJO("Method", method);
         data = StringUtils.replace(data, "0xa9059cbb", "");
@@ -250,30 +250,30 @@ public class TransactionDBOperations
         break;
       // swap eth for tokens
       case "0x7ff36ab5":
-        logger.debug("Method swapExactETHForTokens(uint256,address[],address,uint256)");
+        logger.info("Method swapExactETHForTokens(uint256,address[],address,uint256)");
         break;
       case "0xfb3bdb41":
-        logger.debug("Method swapETHForExactTokens(uint256,address[],address,uint256)");
+        logger.info("Method swapETHForExactTokens(uint256,address[],address,uint256)");
         break;
       case "0x18cbafe5":
-        logger.debug("Method swapExactTokensForETH(uint256,uint256,address[],address,uint256)");
+        logger.info("Method swapExactTokensForETH(uint256,uint256,address[],address,uint256)");
         break;
       case "0x38ed1739":
-        logger.debug("Method swapExactTokensForTokens(uint256,uint256,address[],address,uint256)");
+        logger.info("Method swapExactTokensForTokens(uint256,uint256,address[],address,uint256)");
         break;
       // sell to uniswap
       case "0xd9627aa4":
         break;
       case "0x683fa88d":
-        logger.debug("Method transferFrom(address,address,uint256)");
+        logger.info("Method transferFrom(address,address,uint256)");
         break;
       case "0x791ac947":
         break;
       case "0xa694fc3a":
         break;
       default:
-//        logger.debug("transaction not a contract sell or swap");
-//        logger.debug(data);
+        logger.info("transaction not a contract sell or swap");
+        logger.info(data);
         break;
     }
     return inputNode;

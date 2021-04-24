@@ -11,7 +11,7 @@ import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.protocol.Web3j;
-import com.blocktonix.dao.DBEntity;
+import com.blocktonix.dao.DBSession;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -29,7 +29,8 @@ public class ContractDBOperations
 
   public ContractDBOperations()
   {
-    session = DBEntity.getSessionFactory().openSession();
+//    session = DBSession.getSessionFactory().openSession();
+    session = DBSession.getSession();
     mapper = new ObjectMapper();
   }
 
@@ -66,7 +67,7 @@ public class ContractDBOperations
     session.beginTransaction();
     session.save(dao);
     session.getTransaction().commit();
-    logger.debug("stored contract ABI for " + contractSymbol);
+    logger.info("stored contract ABI for " + contractSymbol);
   }
 
   public String getContractAbi(String contractAddress)

@@ -1,6 +1,5 @@
 package com.blocktonix.main;
 
-import java.util.List;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
@@ -17,38 +16,10 @@ public class BlockchainSync
 
   public static final Logger logger = LoggerFactory.getLogger(BlockchainSync.class);
 
-  private List<String> responsesList = null;
-
-  // public void sync()
-  // {
-  // BlockOperations blockOps = new BlockOperations();
-  // try
-  // {
-  // // forward sync
-  // // new Thread(new ForwardSync(blockOps.getForwardBlocks())).start();
-  // // historical sync
-  // List<BigInteger> blockNumbersList = blockOps.getFirstThousandBlocks();
-  // String runningMode = ApplicationProperties.getProperties("scan.mode");
-  // if (runningMode.equalsIgnoreCase("single"))
-  // {
-  // for (BigInteger blockNumber : blockNumbersList)
-  // {
-  // processBlock(blockNumber);
-  // }
-  // }
-  // else
-  // blockNumbersList.parallelStream().forEach(blockNumber -> processBlock(blockNumber));
-  // }
-  // catch (IOException e)
-  // {
-  // e.printStackTrace();
-  // }
-  // }
-
   public static void main(String[] args)
   {
-    // new BlockchainSync().sync();
-    JobDetail job = JobBuilder.newJob(SyncScheduler.class).build();
+    // trigger a blockchain sync job to run every 1 minute to sync 10 latest blocks
+    JobDetail job = JobBuilder.newJob(SyncSchedulerLatestBlocks.class).build();
     Trigger t = TriggerBuilder.newTrigger().withIdentity("syncblocks")
         .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMinutes(1).repeatForever()).build();
     try
@@ -63,31 +34,4 @@ public class BlockchainSync
     }
 
   }
-
-
-  // private void processBlock(BigInteger blockNumber)
-  // {
-  // ExecutorService executor = Executors.newFixedThreadPool(20);
-  // Collection<Callable<String>> callables = new ArrayList<Callable<String>>();
-  // callables.add(new BlockTaskCallable(Constants.web3, blockNumber));
-  // List<Future<String>> futures;
-  // try
-  // {
-  // futures = executor.invokeAll(callables);
-  // for (Future<String> future : futures)
-  // {
-  // String responseContent = future.get();
-  // responsesList.add(responseContent);
-  // }
-  // futures.clear();
-  // }
-  // catch (InterruptedException | ExecutionException e)
-  //
-  // {
-  // logger.error("Execution Error while processing block " + blockNumber + e.getMessage());
-  // }
-  // executor.shutdown();
-  // }
-
-
 }

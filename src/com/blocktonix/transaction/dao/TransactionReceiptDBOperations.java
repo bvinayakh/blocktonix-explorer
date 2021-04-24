@@ -20,7 +20,7 @@ import org.web3j.protocol.core.methods.response.EthBlock.TransactionObject;
 import org.web3j.protocol.core.methods.response.EthBlock.TransactionResult;
 import org.web3j.protocol.core.methods.response.Log;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
-import com.blocktonix.dao.DBEntity;
+import com.blocktonix.dao.DBSession;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,7 +38,7 @@ public class TransactionReceiptDBOperations
   public TransactionReceiptDBOperations()
   {
     mapper = new ObjectMapper();
-    session = DBEntity.getSessionFactory().openSession();
+    session = DBSession.getSession();
 
   }
 
@@ -97,7 +97,7 @@ public class TransactionReceiptDBOperations
     session.beginTransaction();
     session.save(dao);
     session.getTransaction().commit();
-    logger.debug("stored transaction receipt " + receipt.getTransactionHash() + " for transaction " + receipt.getTransactionHash() + " from block "
+    logger.info("stored transaction receipt " + receipt.getTransactionHash() + " for transaction " + receipt.getTransactionHash() + " from block "
         + receipt.getBlockNumber());
   }
 

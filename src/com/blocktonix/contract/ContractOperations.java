@@ -40,7 +40,7 @@ public class ContractOperations
       node.putPOJO("Symbol", symbol);
       node.putPOJO("TotalSupply", javaToken.totalSupply().send());
       node.putPOJO("Name", javaToken.name().send());
-      logger.debug("Contract Info for " + contractAddress + " " + symbol);
+      logger.info("Contract Info for " + contractAddress + " " + symbol);
     }
     catch (Exception e)
     {

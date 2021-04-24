@@ -18,7 +18,7 @@ import org.web3j.protocol.core.methods.response.EthBlock.Block;
 import org.web3j.protocol.core.methods.response.EthBlock.TransactionObject;
 import org.web3j.protocol.core.methods.response.EthBlock.TransactionResult;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
-import com.blocktonix.dao.DBEntity;
+import com.blocktonix.dao.DBSession;
 import com.blocktonix.transaction.TransactionOperations;
 import com.blocktonix.transaction.dao.TransactionDBOperations;
 import com.blocktonix.transaction.dao.TransactionReceiptDBOperations;
@@ -43,7 +43,8 @@ public class BlockDBOperations
   {
     mapper = new ObjectMapper();
 
-    session = DBEntity.getSessionFactory().openSession();
+//    session = DBSession.getSessionFactory().openSession();
+    session = DBSession.getSession();
 
     transactionOps = new TransactionOperations();
     transactionDbOps = new TransactionDBOperations();
@@ -159,7 +160,7 @@ public class BlockDBOperations
     session.save(dao);
     session.getTransaction().commit();
     // session.close();
-    logger.debug("stored block " + block.getNumber());
+    logger.info("stored block " + block.getNumber());
     // System.out.println("stored block " + block.getNumber());
     // block persisted
 
