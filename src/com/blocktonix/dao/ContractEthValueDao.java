@@ -1,5 +1,6 @@
 package com.blocktonix.dao;
 
+import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -36,5 +37,5 @@ public class ContractEthValueDao
 
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "contract_block_time", columnDefinition = "TIMESTAMP WITH TIME ZONE")
-  public String contractBlockTime = null;
+  public Date contractBlockTime = null;
 }

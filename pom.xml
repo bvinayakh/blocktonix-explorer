@@ -65,11 +65,15 @@
 		<!-- https://mvnrepository.com/artifact/org.webjars.npm/web3-eth -->
 
 		<!-- Begin Hibernate -->
+		<!-- <dependency> <groupId>org.hibernate.orm</groupId> <artifactId>hibernate-core</artifactId> 
+			<version>6.0.0.Alpha7</version> </dependency> -->
+		<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
 		<dependency>
-			<groupId>org.hibernate.orm</groupId>
+			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>6.0.0.Alpha7</version>
+			<version>5.4.31.Final</version>
 		</dependency>
+
 		<!-- End Hibernate -->
 		<!-- https://mvnrepository.com/artifact/org.lucee/postgresql -->
 		<!-- <dependency> <groupId>org.lucee</groupId> <artifactId>postgresql</artifactId> 

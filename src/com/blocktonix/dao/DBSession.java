@@ -12,25 +12,17 @@ public class DBSession
   private static SessionFactory sessionFactory = buildSessionFactory();
 
   private DBSession()
-  {
-    // singleton
-  }
+  {}
 
   private static SessionFactory buildSessionFactory()
   {
     if (sessionFactory == null)
     {
-      // StandardServiceRegistry standardRegistry = new
-      // StandardServiceRegistryBuilder().configure("hibernate.cfg.xml").build();
-      //
-      // Metadata metaData = new MetadataSources(standardRegistry).getMetadataBuilder().build();
       Configuration config = new Configuration();
       config.configure();
-      System.out.println(config.getProperty("hibernate.connection.url"));
-      System.out.println(config.getProperty("hibernate.connection.username"));
-      System.out.println(config.getProperty("hibernate.default_schema"));
+      logger.info("blockchain db: " + config.getProperty("hibernate.connection.url"));
+      logger.info("connect using user: " + config.getProperty("hibernate.connection.username"));
       sessionFactory = config.buildSessionFactory();
-      // sessionFactory = metaData.getSessionFactoryBuilder().build();
     }
     return sessionFactory;
   }

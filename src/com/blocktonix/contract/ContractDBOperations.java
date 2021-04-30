@@ -33,7 +33,7 @@ public class ContractDBOperations
   public static final Logger logger = LoggerFactory.getLogger(ContractDBOperations.class);
 
   private ObjectMapper mapper = null;
-  private ObjectNode parentNode = null;
+  // private ObjectNode parentNode = null;
 
   SessionFactory factory = DBSession.getSessionFactory();
 
@@ -47,25 +47,25 @@ public class ContractDBOperations
   public void storeContract(JsonNode contractNode)
   {
     ContractDao dao = new ContractDao();
-    dao.decimals = contractNode.get("Decimals").asText();
-    dao.symbol = contractNode.get("Symbol").asText();
-    dao.totalSupply = contractNode.get("TotalSupply").asText();
-    dao.name = contractNode.get("Name").asText();
-    dao.address = contractNode.get("ContractAddress").asText();
-    dao.from = contractNode.get("TransferFrom").asText();
-    dao.to = contractNode.get("TransferTo").asText();
-    dao.amount = contractNode.get("Amount").asText();
-    dao.transactionHash = contractNode.get("TransactionHash").asText();
-    dao.blockNumber = contractNode.get("Block").asText();
-    dao.abi = contractNode.get("ABI").asText();
+    ObjectNode node = mapper.convertValue(contractNode, ObjectNode.class);
+    dao.decimals = node.get("Decimals").asText();
+    dao.symbol = node.get("Symbol").asText();
+    dao.totalSupply = node.get("TotalSupply").asText();
+    dao.name = node.get("Name").asText();
+    dao.address = node.get("ContractAddress").asText();
+    dao.from = node.get("TransferFrom").asText();
+    dao.to = node.get("TransferTo").asText();
+    dao.amount = node.get("Amount").asText();
+    dao.transactionHash = node.get("TransactionHash").asText();
+    dao.blockNumber = node.get("Block").asText();
+    dao.abi = node.get("ABI").asText();
     Session session = DBSession.getSessionFactory().openSession();
     session.beginTransaction();
     session.save(dao);
     session.getTransaction().commit();
     if (session != null) session.close();
-
-    logger.info("stored contract " + contractNode.get("Symbol").asText() + " with amount " + dao.amount + " with transaction hash "
-        + contractNode.get("TransactionHash").asText() + " in block " + contractNode.get("Block").asText());
+    logger.info(
+        "stored contract " + dao.symbol + " with amount " + dao.amount + " with transaction hash " + dao.transactionHash + " in block " + dao.blockNumber);
   }
 
   public void storeContractAbi(String contractAddress, String contractSymbol, String contractAbi)
@@ -115,8 +115,8 @@ public class ContractDBOperations
         dao.contractSymbol = contract.symbol;
         dao.contractTransactionHash = contract.transactionHash;
         String blockTime = getBlockTime(contract.blockNumber);
-        dao.contractBlockTime = blockTime;
-        // dao.contractBlockTime = convertDateString(blockTime);
+        // dao.contractBlockTime = blockTime;
+        dao.contractBlockTime = convertDateString(blockTime);
         ObjectNode ethValue = Utilities.getEthValue(contract.address, getCoinGeckoCoinId(contract.symbol), blockTime);
         if (ethValue.has("eth")) dao.contractValueEth = String.valueOf(Double.parseDouble(ethValue.get("eth").asText()));
         if (ethValue.has("usd")) dao.contractValueUsd = String.valueOf(Double.parseDouble(ethValue.get("usd").asText()));
@@ -133,11 +133,17 @@ public class ContractDBOperations
 
   public String getCoinGeckoCoinId(String contractSymbol)
   {
-    String hql = "FROM Token t where t.coinSymbol = :contractSymbol";
+    String hql = "FROM Tokens t where t.coin_symbol = :contractSymbol";
     Session session = DBSession.getSessionFactory().openSession();
     Query<TokensDao> query = session.createQuery(hql);
     query.setParameter("contractSymbol", contractSymbol.toLowerCase().replaceAll("\"", ""));
-    return query.getResultList().get(0).coinId;
+    List<TokensDao> tokenList = query.getResultList();
+    Iterator<TokensDao> i = tokenList.iterator();
+    while (i.hasNext())
+    {
+      System.out.println(i.next().coin_id);
+    }
+    return tokenList.get(0).coin_id;
   }
 
   public Date convertDateString(String date) throws ParseException

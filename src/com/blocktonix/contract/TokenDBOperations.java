@@ -34,9 +34,9 @@ public class TokenDBOperations
         TokensDao dao = new TokensDao();
         Session session = DBSession.getSessionFactory().openSession();
         session.beginTransaction();
-        dao.coinId = node.get("id").asText();
-        dao.coinSymbol = node.get("symbol").asText();
-        dao.coinName = node.get("name").asText();
+        dao.coin_id = node.get("id").asText();
+        dao.coin_symbol = node.get("symbol").asText();
+        dao.coin_name = node.get("name").asText();
         session.saveOrUpdate(dao);
         session.getTransaction().commit();
         if (session != null) session.close();

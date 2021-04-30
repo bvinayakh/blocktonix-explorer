@@ -15,7 +15,7 @@
         <property name="contract_amount" column="contract_amount" type="string" />
         <property name="contract_value_eth" column="contract_value_eth" type="string" />
         <property name="contract_block_number" column="contract_block_number" type="string" />
-        <property name="contract_block_time" column="contract_block_time" type="string" />
+        <property name="contract_block_time" column="contract_block_time" type="date" />
         <property name="contract_value_usd" column="contract_value_usd" type="string" />
     </class>
 </hibernate-mapping>

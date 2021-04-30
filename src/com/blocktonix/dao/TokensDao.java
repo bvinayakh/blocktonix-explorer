@@ -11,14 +11,14 @@ public class TokensDao
 {
   @Id
   @Column(name = "coin_id")
-  public String coinId = null;
+  public String coin_id = null;
 
   @Column(name = "coin_symbol")
-  public String coinSymbol = null;
+  public String coin_symbol = null;
 
   @Column(name = "coin_name")
-  public String coinName = null;
+  public String coin_name = null;
 
   @Column(name = "coin_platforms")
-  public String coinPlatforms = null;
+  public String coin_platforms = null;
 }
