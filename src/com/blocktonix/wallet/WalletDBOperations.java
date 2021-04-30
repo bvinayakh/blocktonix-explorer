@@ -1,4 +1,4 @@
-package com.blocktonix.wallet.dao;
+package com.blocktonix.wallet;
 
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -9,8 +9,9 @@ import javax.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.blocktonix.contract.dao.ContractDao;
+import com.blocktonix.dao.ContractDao;
 import com.blocktonix.dao.DBSession;
+import com.blocktonix.dao.WalletDao;
 import com.blocktonix.utils.TimeUtil;
 
 public class WalletDBOperations

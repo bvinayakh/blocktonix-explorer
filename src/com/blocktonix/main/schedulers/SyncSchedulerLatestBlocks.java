@@ -1,4 +1,4 @@
-package com.blocktonix.main;
+package com.blocktonix.main.schedulers;
 
 /***
  * Scan the blockchain every 1 minute and get the latest block number. Fill the database with

@@ -1,4 +1,4 @@
-package com.blocktonix.transaction.dao;
+package com.blocktonix.dao;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity(name = "Transaction")
-@Table(name = "transaction_information")
+@Table(name = "transaction_information", schema = "public")
 public class TransactionDao
 {
 

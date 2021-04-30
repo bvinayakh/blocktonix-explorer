@@ -1,4 +1,4 @@
-package com.blocktonix.contract.dao;
+package com.blocktonix.dao;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity(name = "ContractABI")
-@Table(name = "contract_abi")
+@Table(name = "contract_abi", schema = "public")
 public class ContractABIDao
 {
 

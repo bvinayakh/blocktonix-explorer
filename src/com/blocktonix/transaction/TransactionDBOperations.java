@@ -1,4 +1,4 @@
-package com.blocktonix.transaction.dao;
+package com.blocktonix.transaction;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -18,12 +18,13 @@ import org.slf4j.LoggerFactory;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.EthBlock.TransactionObject;
 import org.web3j.utils.Numeric;
+import com.blocktonix.contract.ContractDBOperations;
 import com.blocktonix.contract.ContractOperations;
-import com.blocktonix.contract.dao.ContractDBOperations;
 import com.blocktonix.dao.DBSession;
+import com.blocktonix.dao.TransactionDao;
 import com.blocktonix.utils.Utilities;
+import com.blocktonix.wallet.WalletDBOperations;
 import com.blocktonix.wallet.WalletOperations;
-import com.blocktonix.wallet.dao.WalletDBOperations;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

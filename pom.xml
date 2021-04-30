@@ -57,10 +57,6 @@
 		<!-- https://mvnrepository.com/artifact/org.webjars.npm/web3-eth -->
 
 		<!-- Begin Hibernate -->
-		<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
-		<!-- <dependency> <groupId>org.hibernate</groupId> <artifactId>hibernate-core</artifactId> 
-			<version>5.4.28.Final</version> </dependency> -->
-		<!-- https://mvnrepository.com/artifact/org.hibernate.orm/hibernate-core -->
 		<dependency>
 			<groupId>org.hibernate.orm</groupId>
 			<artifactId>hibernate-core</artifactId>
@@ -68,10 +64,13 @@
 		</dependency>
 		<!-- End Hibernate -->
 		<!-- https://mvnrepository.com/artifact/org.lucee/postgresql -->
+		<!-- <dependency> <groupId>org.lucee</groupId> <artifactId>postgresql</artifactId> 
+			<version>8.3-606.jdbc4</version> </dependency> -->
+		<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
 		<dependency>
-			<groupId>org.lucee</groupId>
+			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>8.3-606.jdbc4</version>
+			<version>42.2.20</version>
 		</dependency>
 		<!-- End Postgres Dependencies -->
 		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->

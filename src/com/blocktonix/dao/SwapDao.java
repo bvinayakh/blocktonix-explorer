@@ -1,4 +1,4 @@
-package com.blocktonix.contract.dao;
+package com.blocktonix.dao;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity(name = "Swaps")
-@Table(name = "contract_swaps")
+@Table(name = "contract_swaps", schema = "public")
 public class SwapDao
 {
 

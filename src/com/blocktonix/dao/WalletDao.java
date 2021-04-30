@@ -1,4 +1,4 @@
-package com.blocktonix.wallet.dao;
+package com.blocktonix.dao;
 
 import java.util.Date;
 import javax.persistence.Column;
@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity(name = "Wallet")
-@Table(name = "wallet_information")
+@Table(name = "wallet_information", schema = "public")
 public class WalletDao
 {
 

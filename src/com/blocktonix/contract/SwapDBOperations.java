@@ -1,10 +1,11 @@
-package com.blocktonix.contract.dao;
+package com.blocktonix.contract;
 
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.protocol.Web3j;
 import com.blocktonix.dao.DBSession;
+import com.blocktonix.dao.SwapDao;
 import com.fasterxml.jackson.databind.JsonNode;
 
 public class SwapDBOperations

@@ -2,6 +2,8 @@ package com.blocktonix.utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,6 +15,7 @@ import org.web3j.protocol.core.methods.response.EthAccounts;
 import org.web3j.protocol.core.methods.response.EthGetBalance;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -46,9 +49,71 @@ public class Utilities
     result = Constants.web3.ethGetBalance(ethAddress, DefaultBlockParameter.valueOf("latest")).sendAsync().get();
     return result;
   }
-  
+
   public static void getEthValue()
+  {}
+
+  public static String getCoinsList()
   {
+    String coingeckoAPI = "https://api.coingecko.com/api/v3/coins/list?include_platform=true";
+    String responseValue = null;
+    OkHttpClient client = new OkHttpClient();
+    Request request = new Request.Builder().url(coingeckoAPI).build();
+    Response response;
+    try
+    {
+      response = client.newCall(request).execute();
+      responseValue = response.body().string();
+    }
+    catch (IOException e)
+    {
+      logger.error("IOException getting coins list from CoinGecko " + e.getLocalizedMessage());
+    }
+    return responseValue;
+  }
+
+  public static ObjectNode getEthValue(String contractAddress, String coingeckoCoinId, String blockTime)
+  {
+    String dateComplete = blockTime.split("T")[0];
+    String[] dateArray = dateComplete.split("-");
+    String date = dateArray[2];
+    String month = dateArray[1];
+    String year = dateArray[0];
+    // String coingeckoAPI = "https://api.coingecko.com/api/v3/coins/" + coingeckoCoinId +
+    // "/history?date=01-01-2020&localization=false";
+    String coingeckoAPI =
+        "https://api.coingecko.com/api/v3/coins/" + coingeckoCoinId + "/history?date=" + date + "-" + month + "-" + year + "&localization=false";
+    String responseValue = null;
+    OkHttpClient client = new OkHttpClient();
+    Request request = new Request.Builder().url(coingeckoAPI).build();
+    Response response;
+    ObjectNode responseNode = null;
+    try
+    {
+      response = client.newCall(request).execute();
+      logger.debug(coingeckoAPI);
+      responseValue = response.body().string();
+      ObjectNode resultNode = (ObjectNode) mapper.readTree(responseValue);
+      if (resultNode.has("market_data"))
+      {
+        String id = resultNode.get("id").asText();
+        String ethValue = resultNode.get("market_data").get("current_price").get("eth").asText();
+        if (ethValue != null) ethValue = String.valueOf(Double.parseDouble(ethValue));
+        String usdValue = resultNode.get("market_data").get("current_price").get("usd").asText();
+        if (usdValue != null) usdValue = String.valueOf(Double.parseDouble(usdValue));
+        responseNode = mapper.createObjectNode();
+        responseNode.putPOJO("id", id);
+        responseNode.putPOJO("usd", usdValue);
+        responseNode.putPOJO("eth", ethValue);
+      }
+    }
+    catch (
+
+    IOException e)
+    {
+      logger.error("IOException getting Eth value from CoinGecko " + e.getLocalizedMessage());
+    }
+    return responseNode;
   }
 
   public static String getContractABI(String contractAddress)

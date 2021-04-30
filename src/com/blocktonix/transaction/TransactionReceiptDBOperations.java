@@ -1,4 +1,4 @@
-package com.blocktonix.transaction.dao;
+package com.blocktonix.transaction;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 import org.web3j.protocol.core.methods.response.Log;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import com.blocktonix.dao.DBSession;
+import com.blocktonix.dao.TransactionDao;
+import com.blocktonix.dao.TransactionReceiptDao;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

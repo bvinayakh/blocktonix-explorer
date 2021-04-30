@@ -1,0 +1,18 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="Tokens" table="tokens_coingecko">
+        <meta attribute="class-description">
+           Token information from Coingecko
+        </meta>
+        <id name="id" type="string" column="coin_id">
+            <generator class="native" />
+        </id>
+        <property name="coin_id" column="coin_id" type="string" />
+        <property name="coin_symbol" column="coin_symbol" type="string" />
+        <property name="coin_name" column="coin_name" type="string" />
+        <property name="coin_platforms" column="coin_platforms" type="string" />
+    </class>
+</hibernate-mapping>
+    

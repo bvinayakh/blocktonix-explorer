@@ -1,4 +1,4 @@
-package com.blocktonix.block.dao;
+package com.blocktonix.block;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,15 +13,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.EthBlock.Block;
 import org.web3j.protocol.core.methods.response.EthBlock.TransactionObject;
 import org.web3j.protocol.core.methods.response.EthBlock.TransactionResult;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import com.blocktonix.dao.BlockDao;
 import com.blocktonix.dao.DBSession;
+import com.blocktonix.transaction.TransactionDBOperations;
 import com.blocktonix.transaction.TransactionOperations;
-import com.blocktonix.transaction.dao.TransactionDBOperations;
-import com.blocktonix.transaction.dao.TransactionReceiptDBOperations;
+import com.blocktonix.transaction.TransactionReceiptDBOperations;
 import com.blocktonix.utils.Constants;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
