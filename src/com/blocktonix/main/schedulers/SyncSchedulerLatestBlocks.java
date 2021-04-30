@@ -41,7 +41,7 @@ public class SyncSchedulerLatestBlocks implements Job
     {
       List<BigInteger> blockNumbersList = blockOps.getFirstTenBlocks();
       System.out.println("Processing blocks " + blockNumbersList);
-      String runningMode = ApplicationProperties.getProperties("scan.mode");
+      String runningMode = new ApplicationProperties().getProperty("scan.mode");
       if (runningMode.equalsIgnoreCase("single"))
       {
         for (BigInteger blockNumber : blockNumbersList)

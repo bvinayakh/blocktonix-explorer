@@ -1,4 +1,4 @@
-package com.blocktonix.tokens.dao;
+package com.blocktonix.contract;
 
 import org.hibernate.Session;
 import org.hibernate.exception.ConstraintViolationException;

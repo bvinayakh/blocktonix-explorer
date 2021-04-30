@@ -20,30 +20,27 @@ import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import com.blocktonix.dao.BlockDao;
 import com.blocktonix.dao.DBSession;
 import com.blocktonix.transaction.TransactionDBOperations;
-import com.blocktonix.transaction.TransactionOperations;
 import com.blocktonix.transaction.TransactionReceiptDBOperations;
 import com.blocktonix.utils.Constants;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class BlockDBOperations
 {
   public static final Logger logger = LoggerFactory.getLogger(BlockDBOperations.class);
 
-  private ObjectMapper mapper = null;
-  private ObjectNode parentNode = null;
+  // private ObjectMapper mapper = null;
+  // private ObjectNode parentNode = null;
 
-  private TransactionOperations transactionOps = null;
+  // private TransactionOperations transactionOps = null;
   private TransactionDBOperations transactionDbOps = null;
   private TransactionReceiptDBOperations transactionReceiptDbOps = null;
 
   public BlockDBOperations()
   {
-    mapper = new ObjectMapper();
+    // mapper = new ObjectMapper();
 
     // session = DBSession.getSessionFactory().openSession();
 
-    transactionOps = new TransactionOperations();
+    // transactionOps = new TransactionOperations();
     transactionDbOps = new TransactionDBOperations();
     transactionReceiptDbOps = new TransactionReceiptDBOperations();
   }
