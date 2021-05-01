@@ -1,6 +1,7 @@
 package com.blocktonix.utils;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -8,6 +9,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.protocol.core.DefaultBlockParameter;
@@ -72,7 +74,7 @@ public class Utilities
     return responseValue;
   }
 
-  public static ObjectNode getEthValue(String contractAddress, String coingeckoCoinId, String blockTime)
+  public static ObjectNode getEquivalents(String contractAddress, String coingeckoCoinId, String blockTime)
   {
     String dateComplete = blockTime.split("T")[0];
     String[] dateArray = dateComplete.split("-");
@@ -83,6 +85,7 @@ public class Utilities
     // "/history?date=01-01-2020&localization=false";
     String coingeckoAPI =
         "https://api.coingecko.com/api/v3/coins/" + coingeckoCoinId + "/history?date=" + date + "-" + month + "-" + year + "&localization=false";
+    logger.info(coingeckoAPI);
     String responseValue = null;
     OkHttpClient client = new OkHttpClient();
     Request request = new Request.Builder().url(coingeckoAPI).build();
@@ -98,20 +101,26 @@ public class Utilities
       {
         String id = resultNode.get("id").asText();
         String ethValue = resultNode.get("market_data").get("current_price").get("eth").asText();
-        if (ethValue != null) ethValue = String.valueOf(Double.parseDouble(ethValue));
+        BigDecimal ethBigDecimal = NumberUtils.createBigDecimal(ethValue);
+        if (ethValue != null) ethValue = String.valueOf(ethBigDecimal.setScale(6, BigDecimal.ROUND_DOWN));
         String usdValue = resultNode.get("market_data").get("current_price").get("usd").asText();
-        if (usdValue != null) usdValue = String.valueOf(Double.parseDouble(usdValue));
+        BigDecimal usdBigDecimal = NumberUtils.createBigDecimal(usdValue);
+        if (usdValue != null) usdValue = String.valueOf(usdBigDecimal.setScale(6, BigDecimal.ROUND_DOWN));
+        logger.info(" eth value = " + ethValue);
+        logger.info(" usd value = " + NumberUtils.createBigDecimal(usdValue));
         responseNode = mapper.createObjectNode();
         responseNode.putPOJO("id", id);
         responseNode.putPOJO("usd", usdValue);
         responseNode.putPOJO("eth", ethValue);
       }
     }
-    catch (
-
-    IOException e)
+    catch (IOException e)
     {
       logger.error("IOException getting Eth value from CoinGecko " + e.getLocalizedMessage());
+    }
+    catch (IndexOutOfBoundsException e)
+    {
+      logger.error("Error Rounding ETH value" + e.getLocalizedMessage());
     }
     return responseNode;
   }
@@ -175,6 +184,14 @@ public class Utilities
       return false;
   }
 
+  public static Double truncateDouble(double value, int decimals)
+  {
+    value = value * Math.pow(10, decimals);
+    value = Math.floor(value);
+    value = value / Math.pow(10, decimals);
+
+    return value;
+  }
 }
 
 

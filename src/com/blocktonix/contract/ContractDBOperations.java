@@ -1,5 +1,6 @@
 package com.blocktonix.contract;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -10,6 +11,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -117,9 +119,17 @@ public class ContractDBOperations
         String blockTime = getBlockTime(contract.blockNumber);
         // dao.contractBlockTime = blockTime;
         dao.contractBlockTime = convertDateString(blockTime);
-        ObjectNode ethValue = Utilities.getEthValue(contract.address, getCoinGeckoCoinId(contract.symbol), blockTime);
-        if (ethValue.has("eth")) dao.contractValueEth = String.valueOf(Double.parseDouble(ethValue.get("eth").asText()));
-        if (ethValue.has("usd")) dao.contractValueUsd = String.valueOf(Double.parseDouble(ethValue.get("usd").asText()));
+        String coinId = getCoinGeckoCoinId(contract.symbol, contract.address);
+        if (coinId != null)
+        {
+          ObjectNode ethValue = Utilities.getEquivalents(contract.address, coinId, blockTime);
+          BigDecimal totalContractInEth =
+              BigDecimal.valueOf(NumberUtils.toDouble(ethValue.get("eth").asText())).multiply(BigDecimal.valueOf(NumberUtils.toDouble(contract.amount)));
+          BigDecimal totalContractInUsd =
+              BigDecimal.valueOf(NumberUtils.toDouble(ethValue.get("usd").asText())).multiply(BigDecimal.valueOf(NumberUtils.toDouble(contract.amount)));
+          if (ethValue.has("eth")) dao.contractValueEth = String.valueOf(totalContractInEth);
+          if (ethValue.has("usd")) dao.contractValueUsd = String.valueOf(totalContractInUsd);
+        }
 
         contractSession.save(dao);
         contractSession.getTransaction().commit();
@@ -131,19 +141,20 @@ public class ContractDBOperations
     if (session != null) session.close();
   }
 
-  public String getCoinGeckoCoinId(String contractSymbol)
+  public String getCoinGeckoCoinId(String contractSymbol, String ethContractAddress)
   {
-    String hql = "FROM Tokens t where t.coin_symbol = :contractSymbol";
+    String coinId = null;
+    String hql = "FROM Tokens t where t.coin_symbol = :contractSymbol and t.eth_address = :ethContractAddress";
     Session session = DBSession.getSessionFactory().openSession();
     Query<TokensDao> query = session.createQuery(hql);
     query.setParameter("contractSymbol", contractSymbol.toLowerCase().replaceAll("\"", ""));
+    query.setParameter("ethContractAddress", ethContractAddress);
     List<TokensDao> tokenList = query.getResultList();
-    Iterator<TokensDao> i = tokenList.iterator();
-    while (i.hasNext())
-    {
-      System.out.println(i.next().coin_id);
-    }
-    return tokenList.get(0).coin_id;
+    logger.info("coingecko contract symbol: " + contractSymbol);
+    logger.info("coingeck eth contract address: " + ethContractAddress);
+    logger.info("coingecko tokens list size: " + tokenList.size());
+    if (tokenList.size() > 0) coinId = tokenList.get(0).coin_id;
+    return coinId;
   }
 
   public Date convertDateString(String date) throws ParseException

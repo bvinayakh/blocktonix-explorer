@@ -23,22 +23,12 @@ public class BlockExplorer
   public static void main(String[] args)
   {
     // persist coins list from coingecko to db
-    // try
-    // {
-    // TokenDBOperations tokenOperations = new TokenDBOperations();
-    // tokenOperations.storeTokenInfo(Utilities.getCoinsList());
-    // }
-    // catch (JsonProcessingException e)
-    // {
-    // e.printStackTrace();
-    // }
-
-    // persist coins list from coingecko to db
     if (Boolean.valueOf(new ApplicationProperties().getProperty("sync.coinsgecko")))
     {
+      int timeperiod = Integer.valueOf(new ApplicationProperties().getProperty("sync.coinsgecko.hours"));
       JobDetail job = JobBuilder.newJob(SyncSchedulerCoinsGecko.class).build();
       Trigger t = TriggerBuilder.newTrigger().withIdentity("synccoinsgecko")
-          .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInHours(6).repeatForever()).build();
+          .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInHours(timeperiod).repeatForever()).build();
       try
       {
         Scheduler s = StdSchedulerFactory.getDefaultScheduler();
@@ -54,9 +44,10 @@ public class BlockExplorer
     // trigger a blockchain sync job to run every 1 minute to sync 10 latest blocks
     if (Boolean.valueOf(new ApplicationProperties().getProperty("sync.blocks")))
     {
+      int timeperiod = Integer.valueOf(new ApplicationProperties().getProperty("sync.blocks.minutes"));
       JobDetail job = JobBuilder.newJob(SyncSchedulerLatestBlocks.class).build();
       Trigger t = TriggerBuilder.newTrigger().withIdentity("syncblocks")
-          .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMinutes(1).repeatForever()).build();
+          .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMinutes(timeperiod).repeatForever()).build();
       try
       {
         Scheduler s = StdSchedulerFactory.getDefaultScheduler();
@@ -72,9 +63,10 @@ public class BlockExplorer
     // job to update eth value for contracts in db
     if (Boolean.valueOf(new ApplicationProperties().getProperty("sync.contracts.ethvalue")))
     {
+      int timeperiod = Integer.valueOf(new ApplicationProperties().getProperty("sync.contracts.ethvalue.minutes"));
       JobDetail updateContractEthValueJob = JobBuilder.newJob(SyncSchedulerContractEthValue.class).build();
       Trigger updateContractEthValueTrigger = TriggerBuilder.newTrigger().withIdentity("syncontractethvalue")
-          .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMinutes(5).repeatForever()).build();
+          .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMinutes(timeperiod).repeatForever()).build();
       try
       {
         Scheduler s = StdSchedulerFactory.getDefaultScheduler();
