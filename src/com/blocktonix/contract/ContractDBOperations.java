@@ -3,9 +3,13 @@ package com.blocktonix.contract;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TimeZone;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -117,8 +121,9 @@ public class ContractDBOperations
         dao.contractSymbol = contract.symbol;
         dao.contractTransactionHash = contract.transactionHash;
         String blockTime = getBlockTime(contract.blockNumber);
+        
         // dao.contractBlockTime = blockTime;
-        dao.contractBlockTime = convertDateString(blockTime);
+        // dao.contractBlockTime = convertDateString(blockTime);
         String coinId = getCoinGeckoCoinId(contract.symbol, contract.address);
         if (coinId != null)
         {
@@ -159,8 +164,14 @@ public class ContractDBOperations
 
   public Date convertDateString(String date) throws ParseException
   {
-    SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-    return inputFormat.parse(date.toString());
+    // SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    // inputFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+    // return inputFormat.parse(date.toString());
+    DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+    OffsetDateTime odtInstanceAtOffset = OffsetDateTime.parse(date, DATE_TIME_FORMATTER);
+    OffsetDateTime odtInstanceAtUTC = odtInstanceAtOffset.withOffsetSameInstant(ZoneOffset.UTC);
+    String dateStringInUTC = odtInstanceAtUTC.format(DATE_TIME_FORMATTER);
+    return Date.from(odtInstanceAtUTC.toInstant());
   }
 
   public String getBlockTime(String blockNumber)
@@ -174,13 +185,9 @@ public class ContractDBOperations
     if (session != null) session.close();
 
 
-    // DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
-    // return formatter.format(time);
-    // return formatter.parse(time);
-
     SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+    inputFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
     String formattedDate = null;
-    // System.out.println(inputFormat.format(date));
     formattedDate = inputFormat.format(date);
     return formattedDate;
   }

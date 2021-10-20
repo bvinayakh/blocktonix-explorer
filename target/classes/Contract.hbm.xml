@@ -1,0 +1,25 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="Contract" table="contract_information">
+        <meta attribute="class-description">
+            Contract Details
+        </meta>
+        <id name="id" type="string" column="contract_txn_hash">
+            <generator class="native" />
+        </id>
+        <property name="contract_block_number" column="contract_block_number" type="string" />
+        <property name="contract_txn_hash" column="contract_txn_hash" type="string" />
+        <property name="contract_address" column="contract_address" type="string" />
+        <property name="contract_symbol" column="contract_symbol" type="string" />
+        <property name="contract_name" column="contract_name" type="string" />
+        <property name="contract_initiated_from" column="contract_initiated_from" type="string" />
+        <property name="contract_sent_to" column="contract_sent_to" type="string" />
+        <property name="contract_amount" column="contract_amount" type="string" />
+        <property name="contract_decimals" column="contract_decimals" type="string" />
+        <property name="contract_total_supply" column="contract_total_supply" type="string" />
+        <property name="contract_abi" column="contract_abi" type="string" />
+    </class>
+</hibernate-mapping>
+    

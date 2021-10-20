@@ -1,0 +1,17 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="Swaps" table="contract_swaps">
+        <meta attribute="class-description">
+            Swap Details
+        </meta>
+        <id name="id" type="string" column="contract_txn_hash">
+            <generator class="native" />
+        </id>
+        <property name="tokens_in" column="tokens_in" type="string" />
+        <property name="tokens_out" column="tokens_out" type="string" />
+        <property name="to_address" column="to_address" type="string" />
+    </class>
+</hibernate-mapping>
+    
